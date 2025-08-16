@@ -15,9 +15,13 @@ class CatViewModel(
     private val _catBreeds = MutableStateFlow<List<Cat>>(emptyList())
     val catBreeds = _catBreeds.asStateFlow()
 
-    fun loadCatBreeds() {
+    fun loadCatBreeds(page: Int) {
         viewModelScope.launch {
-            _catBreeds.value = getCatBreeds(page = 2)
+            runCatching {
+                _catBreeds.value = getCatBreeds(page = page)
+            }.onFailure {
+                _catBreeds.value = emptyList()
+            }
         }
     }
 }

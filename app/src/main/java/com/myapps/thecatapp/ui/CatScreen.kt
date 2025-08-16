@@ -40,7 +40,7 @@ fun CatScreen(
     ) {
         Button(
             onClick = {
-                catViewModel.loadCatBreeds()
+                catViewModel.loadCatBreeds(2)
             },
             modifier = Modifier.padding(bottom = 16.dp)
         ) {
@@ -55,7 +55,7 @@ fun CatScreen(
             items(catBreeds) {
                 Box(
                     modifier = Modifier
-                        .aspectRatio(1f) // keeps items square
+                        .aspectRatio(1f)
                         .clip(RoundedCornerShape(8.dp))
                         .background(Color.LightGray)
                         .padding(4.dp),

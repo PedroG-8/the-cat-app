@@ -1,12 +1,13 @@
 package com.myapps.thecatapp.di
 
+import com.myapps.thecatapp.BuildConfig
 import com.myapps.thecatapp.data.remote.CatApiService
 import com.myapps.thecatapp.data.repository.CatRepositoryImpl
 import com.myapps.thecatapp.domain.repository.CatRepository
-import com.myapps.thecatapp.domain.usecase.GetRandomCatUseCase
+import com.myapps.thecatapp.domain.usecase.GetCatBreedsUseCase
 import com.myapps.thecatapp.ui.CatViewModel
 import okhttp3.OkHttpClient
-import org.koin.core.module.dsl.viewModel
+import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -14,8 +15,15 @@ import retrofit2.converter.gson.GsonConverterFactory
 val networkModule = module {
     single {
         OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val newRequest = chain.request().newBuilder()
+                    .addHeader("x-api-key", BuildConfig.CAT_API_KEY)
+                    .build()
+                chain.proceed(newRequest)
+            }
             .build()
     }
+
     single {
         Retrofit.Builder()
             .baseUrl("https://api.thecatapi.com/")
@@ -31,9 +39,9 @@ val repositoryModule = module {
 }
 
 val useCaseModule = module {
-    factory { GetRandomCatUseCase(get()) }
+    factory { GetCatBreedsUseCase(get()) }
 }
 
 val viewModelModule = module {
-    viewModel { CatViewModel(get()) }
+    viewModelOf(::CatViewModel)
 }

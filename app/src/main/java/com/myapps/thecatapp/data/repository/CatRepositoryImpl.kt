@@ -9,9 +9,9 @@ import kotlinx.coroutines.withContext
 class CatRepositoryImpl(
     private val api: CatApiService
 ) : CatRepository {
-    override suspend fun getRandomCat(): Cat {
+    override suspend fun getCatBreeds(page: Int): List<Cat> {
         return withContext(Dispatchers.IO) {
-            api.getRandomCat().first().toEntity()
+            api.getCatBreeds(page = page).map { it.toEntity() }
         }
     }
 }

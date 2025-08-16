@@ -1,3 +1,5 @@
+import com.android.build.gradle.internal.cxx.configure.gradleLocalProperties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -8,12 +10,17 @@ android {
     namespace = "com.myapps.thecatapp"
     compileSdk = 36
 
+    val localProperties = gradleLocalProperties(rootDir, providers)
+    val catApiKey: String = localProperties["CAT_API_KEY"] as String
+
     defaultConfig {
         applicationId = "com.myapps.thecatapp"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField("String", "CAT_API_KEY", "\"$catApiKey\"")
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -36,6 +43,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
 }
 

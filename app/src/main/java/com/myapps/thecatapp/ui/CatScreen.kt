@@ -1,6 +1,7 @@
 package com.myapps.thecatapp.ui
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -12,9 +13,13 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.FavoriteBorder
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -32,27 +37,22 @@ fun CatScreen(
     val catViewModel = koinViewModel<CatViewModel>()
     val catBreeds by catViewModel.catBreeds.collectAsState()
 
+    LaunchedEffect(Unit) {
+        catViewModel.loadCatsWithFavourites(0)
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(
-            onClick = {
-                catViewModel.loadCatBreeds(2)
-            },
-            modifier = Modifier.padding(bottom = 16.dp)
-        ) {
-            Text("Load random cat")
-        }
-
         LazyVerticalGrid(
             columns = GridCells.Fixed(3),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(catBreeds) {
+            items(catBreeds) { cat ->
                 Box(
                     modifier = Modifier
                         .aspectRatio(1f)
@@ -61,9 +61,19 @@ fun CatScreen(
                         .padding(4.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    AsyncImage(
-                        model = it.url,
-                        contentDescription = null
+                    Column {
+                        AsyncImage(
+                            model = cat.url,
+                            contentDescription = null
+                        )
+                        Text(text = cat.breed?.name.orEmpty())
+                    }
+                    Icon(
+                        imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favourites",
+                        modifier = Modifier.align(Alignment.TopEnd).clickable {
+                            catViewModel.addCatToFavourites(cat.imageId)
+                        }
                     )
                 }
             }

@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -25,12 +26,9 @@ fun CatScreen(
 ) {
     val catViewModel = koinViewModel<CatViewModel>()
     val catBreeds by catViewModel.catBreeds.collectAsState()
+    val isLoading by catViewModel.isLoading.collectAsState()
 
     var breedSearch by remember { mutableStateOf("") }
-
-    LaunchedEffect(Unit) {
-        catViewModel.loadCatsWithFavourites()
-    }
 
     Column(
         modifier = modifier
@@ -38,7 +36,6 @@ fun CatScreen(
             .statusBarsPadding(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
         BreedSearchBar(
             modifier = Modifier.padding(bottom = 32.dp),
             breed = breedSearch,
@@ -52,5 +49,9 @@ fun CatScreen(
             loadNextPage = catViewModel::loadNextPage,
             goToDetail = goToDetail
         )
+
+        if (isLoading) {
+            CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+        }
     }
 }

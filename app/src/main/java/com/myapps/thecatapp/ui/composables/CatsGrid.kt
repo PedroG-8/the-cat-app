@@ -33,13 +33,15 @@ fun CatsGrid(
     modifier: Modifier = Modifier,
     catBreeds: List<Cat>,
     addOrRemoveFromFavourits: (String) -> Unit,
-    loadNextPage: () -> Unit,
+    loadNextPage: () -> Unit = {},
     goToDetail: () -> Unit
 ) {
     val lazyGridState = rememberLazyGridState()
+
     LaunchedEffect(lazyGridState.canScrollForward) {
         if (!lazyGridState.canScrollForward) loadNextPage()
     }
+
     LazyVerticalGrid(
         modifier = modifier,
         state = lazyGridState,

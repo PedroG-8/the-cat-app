@@ -26,10 +26,14 @@ class CatViewModel(
     val favourites = _favourites.asStateFlow()
 
     private val _isLoading = MutableStateFlow<Boolean>(false)
-    val isLoading = _favourites.asStateFlow()
+    val isLoading = _isLoading.asStateFlow()
 
     private var currentPage = 0
     private var endReached = false
+
+    init {
+        loadCatsWithFavourites()
+    }
 
     fun loadCatsWithFavourites() {
         viewModelScope.launch {

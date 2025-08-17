@@ -1,7 +1,9 @@
 package com.myapps.thecatapp.data.repository
 
+import com.myapps.thecatapp.data.model.CatDto
+import com.myapps.thecatapp.data.model.FavouriteDto
+import com.myapps.thecatapp.data.model.ImageDto
 import com.myapps.thecatapp.data.remote.CatApiService
-import com.myapps.thecatapp.data.remote.CatDto
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -23,36 +25,44 @@ class CatRepositoryTest {
     }
 
     @Test
-    fun givenApiReturnsCatBreeds_whenGetCatBreeds_thenReturnsMappedCatBreedsList() = runTest {
+    fun givenApiReturnsCatBreeds_whenGetCatBreeds_thenReturnsMappedCatsWithFavouritesList() = runTest {
         val apiBreeds = listOf(
             CatDto(id = "id1", url = "url1", width = 100, height = 100),
             CatDto(id = "id2", url = "url2", width = 120, height = 120)
         )
+        val favourites = listOf(
+            FavouriteDto(id = "id1", image = ImageDto(id = "imgId_1", url = "img_url1"))
+        )
         coEvery { api.getCatBreeds(page = 0) } returns apiBreeds
+        coEvery { api.getFavourites() } returns favourites
 
-        val result = repository.getCatBreeds(page = 0)
+        val result = repository.getCatsWithFavourites(page = 0)
 
         assertEquals(apiBreeds.map { it.toEntity() }, result)
         coVerify { api.getCatBreeds(page = 0) }
+        coVerify { api.getFavourites() }
     }
 
     @Test
-    fun givenApiReturnsEmptyList_whenGetCatBreeds_thenReturnsEmptyList() = runTest {
+    fun givenApiReturnsEmptyList_whenGetCatsWithFavourites_thenReturnsEmptyList() = runTest {
         coEvery { api.getCatBreeds(page = 0) } returns emptyList()
+        coEvery { api.getFavourites() } returns emptyList()
 
-        val result = repository.getCatBreeds(page = 0)
+        val result = repository.getCatsWithFavourites(page = 0)
 
         assertTrue(result.isEmpty())
         coVerify { api.getCatBreeds(page = 0) }
+        coVerify { api.getFavourites() }
     }
 
     @Test
-    fun givenApiThrowsException_whenGetCatBreeds_thenExceptionPropagates() = runTest {
+    fun givenApiThrowsException_whenGetCatsWithFavourites_thenExceptionPropagates() = runTest {
         val exception = RuntimeException("Network error")
         coEvery { api.getCatBreeds(page = 0) } throws exception
+        coEvery { api.getFavourites() } throws exception
 
         val thrown = assertFailsWith<RuntimeException> {
-            repository.getCatBreeds(page = 0)
+            repository.getCatsWithFavourites(page = 0)
         }
 
         assertEquals("Network error", thrown.message)

@@ -4,8 +4,11 @@ import com.myapps.thecatapp.BuildConfig
 import com.myapps.thecatapp.data.remote.CatApiService
 import com.myapps.thecatapp.data.repository.CatRepositoryImpl
 import com.myapps.thecatapp.domain.repository.CatRepository
-import com.myapps.thecatapp.domain.usecase.GetCatBreedsUseCase
-import com.myapps.thecatapp.ui.CatViewModel
+import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
+import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
+import com.myapps.thecatapp.domain.usecase.GetFavouriteCatsUseCase
+import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
+import com.myapps.thecatapp.ui.screens.CatViewModel
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -39,7 +42,10 @@ val repositoryModule = module {
 }
 
 val useCaseModule = module {
-    factory { GetCatBreedsUseCase(get()) }
+    factory { GetCatsWithFavouritesUseCase(get()) }
+    factory { GetFavouriteCatsUseCase(get()) }
+    factory { AddCatToFavouritesUseCase(get()) }
+    factory { RemoveCatFromFavouritesUseCase(get()) }
 }
 
 val viewModelModule = module {

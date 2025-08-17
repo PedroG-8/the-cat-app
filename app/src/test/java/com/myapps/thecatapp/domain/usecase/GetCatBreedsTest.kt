@@ -14,48 +14,48 @@ import kotlin.test.assertFailsWith
 
 class GetCatBreedsTest {
 
-    private lateinit var getCatBreeds: GetCatBreedsUseCase
+    private lateinit var getCatBreeds: GetCatsWithFavouritesUseCase
     private val repository = mockk<CatRepository>()
 
     @Before
     fun setUp() {
-        getCatBreeds = GetCatBreedsUseCase(repository)
+        getCatBreeds = GetCatsWithFavouritesUseCase(repository)
     }
 
     @Test
     fun givenRepositoryReturnsCatBreeds_whenGetCatBreeds_thenReturnsCatBreedsList() = runTest {
         val fakeBreeds = listOf(
-            Cat(id = "id1", url = "url1"),
-            Cat(id = "id2", url = "url2")
+            Cat(imageId = "id1", url = "url1"),
+            Cat(imageId = "id2", url = "url2")
         )
-        coEvery { repository.getCatBreeds(page = 0) } returns fakeBreeds
+        coEvery { repository.getCatsWithFavourites(page = 0) } returns fakeBreeds
 
         val result = getCatBreeds(page = 0).map { it }
 
         assertEquals(fakeBreeds, result)
-        coVerify { repository.getCatBreeds(page = 0) }
+        coVerify { repository.getCatsWithFavourites(page = 0) }
     }
 
     @Test
     fun givenRepositoryReturnsEmptyList_whenGetCatBreeds_thenReturnsEmptyList() = runTest {
-        coEvery { repository.getCatBreeds(page = 0) } returns emptyList()
+        coEvery { repository.getCatsWithFavourites(page = 0) } returns emptyList()
 
         val result = getCatBreeds(page = 0)
 
         assertTrue(result.isEmpty())
-        coVerify { repository.getCatBreeds(page = 0) }
+        coVerify { repository.getCatsWithFavourites(page = 0) }
     }
 
     @Test
     fun givenRepositoryThrowsException_whenGetCatBreeds_thenExceptionIsMapped() = runTest {
         val exception = RuntimeException("Network error")
-        coEvery { repository.getCatBreeds(page = 0) } throws exception
+        coEvery { repository.getCatsWithFavourites(page = 0) } throws exception
 
         val thrown = assertFailsWith<RuntimeException> {
             getCatBreeds(page = 0)
         }
 
         assertEquals("Network error", thrown.message)
-        coVerify { repository.getCatBreeds(page = 0) }
+        coVerify { repository.getCatsWithFavourites(page = 0) }
     }
 }

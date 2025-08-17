@@ -8,7 +8,7 @@ import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetFavouriteCatsUseCase
 import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
-import com.myapps.thecatapp.ui.CatViewModel
+import com.myapps.thecatapp.ui.screens.CatViewModel
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module

@@ -4,7 +4,7 @@ import com.myapps.thecatapp.domain.model.Cat
 import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetFavouriteCatsUseCase
-import com.myapps.thecatapp.ui.CatViewModel
+import com.myapps.thecatapp.ui.screens.CatViewModel
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk

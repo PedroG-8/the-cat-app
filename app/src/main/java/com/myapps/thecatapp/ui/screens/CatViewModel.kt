@@ -1,4 +1,4 @@
-package com.myapps.thecatapp.ui
+package com.myapps.thecatapp.ui.screens
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

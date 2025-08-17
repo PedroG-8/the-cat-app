@@ -32,9 +32,9 @@ import com.myapps.thecatapp.domain.model.Cat
 fun CatsGrid(
     modifier: Modifier = Modifier,
     catBreeds: List<Cat>,
-    addOrRemoveFromFavourits: (String) -> Unit = {},
+    addOrRemoveFromFavourites: (String) -> Unit = {},
     loadNextPage: () -> Unit = {},
-    goToDetail: () -> Unit,
+    goToDetail: (String) -> Unit,
     showLifespan: Boolean = false
 ) {
     val lazyGridState = rememberLazyGridState()
@@ -55,7 +55,7 @@ fun CatsGrid(
                 modifier = Modifier
                     .aspectRatio(1f)
                     .clickable {
-                        goToDetail()
+                        goToDetail(cat.imageId)
                     }
                     .clip(RoundedCornerShape(8.dp))
                     .background(Color.LightGray)
@@ -79,7 +79,7 @@ fun CatsGrid(
                     modifier = Modifier
                         .align(Alignment.TopEnd)
                         .clickable {
-                            addOrRemoveFromFavourits(cat.imageId)
+                            addOrRemoveFromFavourites(cat.imageId)
                         }
                 )
             }

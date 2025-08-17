@@ -14,7 +14,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun FavouritesScreen(
     modifier: Modifier = Modifier,
-    goToDetail: () -> Unit,
+    goToDetail: (String) -> Unit,
 ) {
     val favouritesViewModel = koinViewModel<FavouritesViewModel>()
     val favouriteCats by favouritesViewModel.favouriteCats.collectAsState()

@@ -17,22 +17,17 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
-import androidx.navigation.NavBackStackEntry
-import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
 import com.myapps.thecatapp.ui.screens.CatScreen
 import com.myapps.thecatapp.ui.screens.DetailScreen
 import com.myapps.thecatapp.ui.screens.FavouritesScreen
 import com.myapps.thecatapp.ui.theme.TheCatAppTheme
-import org.koin.androidx.compose.koinViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -81,22 +76,22 @@ class MainActivity : ComponentActivity() {
                             startDestination = Route.Home
                         ) {
                             composable<Route.Home> {
-//                                val sharedViewModel = it.sharedViewModel<SharedViewModel>(navController)
                                 CatScreen(
                                     modifier = Modifier.padding(innerPadding),
-                                    goToDetail = { navController.navigate(Route.Detail) }
+                                    goToDetail = { navController.navigate(Route.Detail(imageId = it)) }
                                 )
                             }
                             composable<Route.Favourites> {
-//                                val sharedViewModel = it.sharedViewModel<SharedViewModel>(navController)
                                 FavouritesScreen(
                                     modifier = Modifier.padding(innerPadding),
-                                    goToDetail = { navController.navigate(Route.Detail) }
+                                    goToDetail = { navController.navigate(Route.Detail(imageId = it)) }
                                 )
                             }
                             composable<Route.Detail> {
+                                val args = it.toRoute<Route.Detail>()
                                 DetailScreen(
-                                    modifier = Modifier.padding(innerPadding)
+                                    modifier = Modifier.padding(innerPadding),
+                                    imageId = args.imageId
                                 )
                             }
                         }

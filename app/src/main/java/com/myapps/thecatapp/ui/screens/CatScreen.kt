@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -22,7 +21,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun CatScreen(
     modifier: Modifier = Modifier,
-    goToDetail: () -> Unit
+    goToDetail: (String) -> Unit
 ) {
     val catViewModel = koinViewModel<CatViewModel>()
     val catBreeds by catViewModel.catBreeds.collectAsState()
@@ -45,7 +44,7 @@ fun CatScreen(
         CatsGrid(
             modifier = Modifier.weight(1f),
             catBreeds = catBreeds,
-            addOrRemoveFromFavourits = catViewModel::addOrRemoveCatFromFavourites,
+            addOrRemoveFromFavourites = catViewModel::addOrRemoveCatFromFavourites,
             loadNextPage = catViewModel::loadNextPage,
             goToDetail = goToDetail
         )

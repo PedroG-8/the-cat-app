@@ -3,35 +3,25 @@ package com.myapps.thecatapp.ui.screens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myapps.thecatapp.domain.model.Cat
-import com.myapps.thecatapp.domain.usecase.GetFavouriteCatsUseCase
+import com.myapps.thecatapp.domain.usecase.GetLocalCatDataUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 
 class DetailViewModel(
-    private val getFavouriteCatsUseCase: GetFavouriteCatsUseCase
+    private val getLocalCatDataUseCase: GetLocalCatDataUseCase
 ) : ViewModel() {
 
-    private val _favouriteCats = MutableStateFlow<List<Cat>>(emptyList())
-    val favouriteCats = _favouriteCats.asStateFlow()
+    private val _catData = MutableStateFlow<Cat?>(null)
+    val catData = _catData.asStateFlow()
 
-    private val _isLoading = MutableStateFlow<Boolean>(false)
-    val isLoading = _isLoading.asStateFlow()
-
-    init {
-        getFavourites()
-    }
-
-    private fun getFavourites() {
+    fun getCatData(imageId: String) {
         viewModelScope.launch {
             runCatching {
-                _isLoading.value = true
-                _favouriteCats.value = getFavouriteCatsUseCase()
-                _isLoading.value = false
+                _catData.value = getLocalCatDataUseCase(imageId)
             }.onFailure {
-                _isLoading.value = false
-                _favouriteCats.value = emptyList()
+                _catData.value = null
             }
         }
     }

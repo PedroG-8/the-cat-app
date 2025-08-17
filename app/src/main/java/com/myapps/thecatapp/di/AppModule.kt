@@ -3,14 +3,18 @@ package com.myapps.thecatapp.di
 import androidx.room.Room
 import com.myapps.thecatapp.BuildConfig
 import com.myapps.thecatapp.data.local.CatDatabase
+import com.myapps.thecatapp.data.local.repository.LocalCatRepositoryImpl
 import com.myapps.thecatapp.data.remote.CatApiService
 import com.myapps.thecatapp.data.remote.repository.CatRepositoryImpl
 import com.myapps.thecatapp.domain.repository.CatRepository
+import com.myapps.thecatapp.domain.repository.LocalCatRepository
 import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetFavouriteCatsUseCase
+import com.myapps.thecatapp.domain.usecase.GetLocalCatDataUseCase
 import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
 import com.myapps.thecatapp.ui.screens.CatViewModel
+import com.myapps.thecatapp.ui.screens.DetailViewModel
 import com.myapps.thecatapp.ui.screens.FavouritesViewModel
 import okhttp3.OkHttpClient
 import org.koin.core.module.dsl.viewModelOf
@@ -55,6 +59,7 @@ val networkModule = module {
 
 val repositoryModule = module {
     single<CatRepository> { CatRepositoryImpl(get(), get(), get()) }
+    single<LocalCatRepository> { LocalCatRepositoryImpl(get()) }
 }
 
 val useCaseModule = module {
@@ -62,9 +67,11 @@ val useCaseModule = module {
     factory { GetFavouriteCatsUseCase(get()) }
     factory { AddCatToFavouritesUseCase(get()) }
     factory { RemoveCatFromFavouritesUseCase(get()) }
+    factory { GetLocalCatDataUseCase(get()) }
 }
 
 val viewModelModule = module {
     viewModelOf(::CatViewModel)
     viewModelOf(::FavouritesViewModel)
+    viewModelOf(::DetailViewModel)
 }

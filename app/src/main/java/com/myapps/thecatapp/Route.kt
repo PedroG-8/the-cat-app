@@ -13,5 +13,7 @@ sealed interface Route {
     data object Favourites: Route
 
     @Serializable
-    data object Detail: Route
+    data class Detail(
+        val imageId: String
+    ): Route
 }

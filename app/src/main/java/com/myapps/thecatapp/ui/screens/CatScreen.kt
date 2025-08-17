@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -48,7 +49,7 @@ fun CatScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         LazyVerticalGrid(
-            columns = GridCells.Fixed(3),
+            columns = GridCells.Fixed(2),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
@@ -63,6 +64,7 @@ fun CatScreen(
                 ) {
                     Column {
                         AsyncImage(
+                            modifier = Modifier.fillMaxHeight(0.75f),
                             model = cat.url,
                             contentDescription = null
                         )

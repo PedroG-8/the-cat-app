@@ -37,4 +37,9 @@ interface CatApiService {
     suspend fun removeFromFavourites(
         @Path("favourite_id") favouriteId: String
     ): Response<Unit>
+
+    @GET("v1/breeds/search")
+    suspend fun searchBreed(
+        @Query("q") breed: String
+    ): List<CatDto>
 }

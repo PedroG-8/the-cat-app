@@ -9,7 +9,7 @@ import com.myapps.thecatapp.domain.model.Cat
 import com.myapps.thecatapp.domain.repository.CatRepository
 import com.myapps.thecatapp.extensions.isOnline
 
-private const val LIMIT = 20
+const val LIMIT = 20
 class CatRepositoryImpl(
     private val api: CatApiService,
     private val catDao: CatDao,

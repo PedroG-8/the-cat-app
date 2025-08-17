@@ -7,6 +7,7 @@ import com.myapps.thecatapp.domain.model.Favourite
 import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
+import com.myapps.thecatapp.domain.usecase.SearchBreedUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -14,11 +15,15 @@ import kotlinx.coroutines.launch
 class CatViewModel(
     private val getCatsWithFavouritesUseCase: GetCatsWithFavouritesUseCase,
     private val addCatToFavouritesUseCase: AddCatToFavouritesUseCase,
-    private val removeCatFromFavouritesUseCase: RemoveCatFromFavouritesUseCase
+    private val removeCatFromFavouritesUseCase: RemoveCatFromFavouritesUseCase,
+    private val searchBreedUseCase: SearchBreedUseCase
 ) : ViewModel() {
 
     private val _catBreeds = MutableStateFlow<List<Cat>>(emptyList())
     val catBreeds = _catBreeds.asStateFlow()
+
+    private val _searchedBreeds = MutableStateFlow<List<Cat>>(emptyList())
+    val searchedBreeds = _searchedBreeds.asStateFlow()
 
     private val _favourites = MutableStateFlow<List<Favourite>>(emptyList())
     val favourites = _favourites.asStateFlow()
@@ -70,6 +75,23 @@ class CatViewModel(
                 currentCat.favouriteId?.let { removeCatFromFavourites(it) }
             } else {
                 addCatToFavourites(imageId)
+            }
+        }
+    }
+
+    fun searchBreed(breed: String) {
+        viewModelScope.launch {
+            runCatching {
+                _isLoading.value = true
+                if (breed.isEmpty()) {
+                    _searchedBreeds.value = emptyList()
+                } else {
+                    _searchedBreeds.value = searchBreedUseCase(breed)
+                }
+                _isLoading.value = false
+            }.onFailure {
+                _isLoading.value = false
+                _searchedBreeds.value = emptyList()
             }
         }
     }

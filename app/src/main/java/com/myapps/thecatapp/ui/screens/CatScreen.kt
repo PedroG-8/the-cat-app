@@ -10,12 +10,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.myapps.thecatapp.ui.composables.BreedSearchBar
 import com.myapps.thecatapp.ui.composables.CatsGrid
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -24,7 +26,9 @@ fun CatScreen(
     goToDetail: (String) -> Unit
 ) {
     val catViewModel = koinViewModel<CatViewModel>()
+    val coroutineScope = rememberCoroutineScope()
     val catBreeds by catViewModel.catBreeds.collectAsState()
+    val searchedBreeds by catViewModel.searchedBreeds.collectAsState()
     val isLoading by catViewModel.isLoading.collectAsState()
 
     var breedSearch by remember { mutableStateOf("") }
@@ -38,12 +42,17 @@ fun CatScreen(
         BreedSearchBar(
             modifier = Modifier.padding(bottom = 32.dp),
             breed = breedSearch,
-            onChangeBreed = { breedSearch = it }
+            onChangeBreed = {
+                coroutineScope.launch {
+                    breedSearch = it
+                    catViewModel.searchBreed(breedSearch)
+                }
+            }
         )
 
         CatsGrid(
             modifier = Modifier.weight(1f),
-            catBreeds = catBreeds,
+            catBreeds = if (breedSearch.isEmpty()) catBreeds else searchedBreeds,
             addOrRemoveFromFavourites = catViewModel::addOrRemoveCatFromFavourites,
             loadNextPage = catViewModel::loadNextPage,
             goToDetail = goToDetail

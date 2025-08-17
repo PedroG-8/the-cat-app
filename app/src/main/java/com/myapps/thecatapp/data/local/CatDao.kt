@@ -21,4 +21,6 @@ interface CatDao {
     suspend fun getCats(limit: Int = 20, offset: Int): List<CatEntity>
     @Query("SELECT * FROM cats WHERE isFavourite = 1")
     suspend fun getFavourites(): List<CatEntity>
+    @Query("SELECT * FROM cats WHERE name LIKE '%' || :breed || '%'")
+    suspend fun searchBreeds(breed: String): List<CatEntity>
 }

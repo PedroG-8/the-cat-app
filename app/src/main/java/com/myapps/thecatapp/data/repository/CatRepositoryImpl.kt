@@ -13,10 +13,16 @@ class CatRepositoryImpl(
 ) : CatRepository {
     override suspend fun getCatsWithFavourites(page: Int): List<Cat> {
         val cats = api.getCatBreeds(page = page).map { it.toEntity() }
-        val favouriteImagesId = api.getFavourites().map { it.image.id }
+        val favourites = api.getFavourites()
 
         return cats.map { cat ->
-            cat.copy(isFavourite = favouriteImagesId.contains(cat.imageId))
+            val favourite = favourites.firstOrNull { it.image.id == cat.imageId }
+            favourite?.let {
+                cat.copy(
+                    isFavourite = true,
+                    favouriteId = it.id
+                )
+            } ?: cat
         }
     }
 
@@ -29,6 +35,15 @@ class CatRepositoryImpl(
     override suspend fun addToFavourites(imageId: String): Boolean {
         return runCatching {
             api.addToFavourites(FavouriteRequest(imageId))
+            true
+        }.getOrElse {
+            false
+        }
+    }
+
+    override suspend fun removeFromFavourites(favouriteId: String): Boolean {
+        return runCatching {
+            api.removeFromFavourites(favouriteId)
             true
         }.getOrElse {
             false

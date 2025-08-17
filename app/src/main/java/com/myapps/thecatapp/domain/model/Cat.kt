@@ -4,5 +4,6 @@ data class Cat(
     val imageId: String,
     val url: String,
     val breed: Breed? = null,
-    val isFavourite: Boolean = false
+    val isFavourite: Boolean = false,
+    val favouriteId: String? = null
 )

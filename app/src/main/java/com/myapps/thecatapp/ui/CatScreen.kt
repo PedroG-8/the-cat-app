@@ -72,7 +72,7 @@ fun CatScreen(
                         imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Favourites",
                         modifier = Modifier.align(Alignment.TopEnd).clickable {
-                            catViewModel.addCatToFavourites(cat.imageId)
+                            catViewModel.addOrRemoveCatFromFavourites(cat.imageId)
                         }
                     )
                 }

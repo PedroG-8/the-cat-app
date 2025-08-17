@@ -7,4 +7,5 @@ interface CatRepository {
     suspend fun getCatsWithFavourites(page: Int): List<Cat>
     suspend fun getFavourites(): List<Favourite>
     suspend fun addToFavourites(imageId: String): Boolean
+    suspend fun removeFromFavourites(favouriteId: String): Boolean
 }

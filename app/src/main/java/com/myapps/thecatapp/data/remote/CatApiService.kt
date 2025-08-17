@@ -5,8 +5,10 @@ import com.myapps.thecatapp.data.model.FavouriteDto
 import com.myapps.thecatapp.data.model.FavouriteRequest
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface CatApiService {
@@ -24,5 +26,10 @@ interface CatApiService {
     @POST("v1/favourites")
     suspend fun addToFavourites(
         @Body request: FavouriteRequest
+    ): Response<Unit>
+
+    @DELETE("v1/favourites/{favourite_id}")
+    suspend fun removeFromFavourites(
+        @Path("favourite_id") favouriteId: String
     ): Response<Unit>
 }

@@ -1,4 +1,4 @@
-package com.myapps.thecatapp.data.model
+package com.myapps.thecatapp.data.remote.model
 
 import com.google.gson.annotations.SerializedName
 

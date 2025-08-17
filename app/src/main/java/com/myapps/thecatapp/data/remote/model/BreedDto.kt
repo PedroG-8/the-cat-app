@@ -1,6 +1,7 @@
-package com.myapps.thecatapp.data.model
+package com.myapps.thecatapp.data.remote.model
 
-import com.myapps.thecatapp.domain.model.Breed
+//import com.myapps.thecatapp.data.local.model.BreedEntity
+import com.myapps.thecatapp.data.local.model.BreedEntity
 
 data class BreedDto(
     val id: String,
@@ -9,8 +10,7 @@ data class BreedDto(
     val temperament: String,
     val description: String
 ) {
-    fun toEntity() = Breed(
-        id = id,
+    fun toEntity() = BreedEntity(
         name = name,
         origin = origin,
         temperament = temperament,

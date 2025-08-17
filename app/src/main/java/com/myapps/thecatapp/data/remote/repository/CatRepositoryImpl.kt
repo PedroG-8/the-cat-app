@@ -1,34 +1,43 @@
-package com.myapps.thecatapp.data.repository
+package com.myapps.thecatapp.data.remote.repository
 
-import com.myapps.thecatapp.data.model.FavouriteRequest
+import com.myapps.thecatapp.data.local.CatDao
 import com.myapps.thecatapp.data.remote.CatApiService
+import com.myapps.thecatapp.data.remote.model.FavouriteRequest
 import com.myapps.thecatapp.domain.model.Cat
 import com.myapps.thecatapp.domain.model.Favourite
 import com.myapps.thecatapp.domain.repository.CatRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+private const val LIMIT = 20
 class CatRepositoryImpl(
-    private val api: CatApiService
+    private val api: CatApiService,
+    private val catDao: CatDao
 ) : CatRepository {
-    override suspend fun getCatsWithFavourites(page: Int): List<Cat> {
-        val cats = api.getCatBreeds(page = page).map { it.toEntity() }
-        val favourites = api.getFavourites()
 
-        return cats.map { cat ->
-            val favourite = favourites.firstOrNull { it.image.id == cat.imageId }
-            favourite?.let {
-                cat.copy(
-                    isFavourite = true,
-                    favouriteId = it.id
+    override suspend fun getCatsWithFavourites(page: Int): List<Cat> {
+        val offset = LIMIT * page
+        val cats = api.getCatBreeds(page = page)
+        catDao.upsertCats(cats.map { it.toEntity() })
+
+        val favourites = api.getFavourites()
+        favourites.forEach { fav ->
+            val currentCat = catDao.getCatByImageId(fav.image.id)
+            currentCat?.let {
+                catDao.updateCat(
+                    it.copy(
+                        isFavourite = true,
+                        favouriteId = fav.id
+                    )
                 )
-            } ?: cat
+            }
         }
+        return catDao.getCats(limit = LIMIT, offset = offset).map { it.toUiModel() }
     }
 
     override suspend fun getFavourites(): List<Favourite> {
         return withContext(Dispatchers.IO) {
-            api.getFavourites().map { it.toEntity() }
+            api.getFavourites().map { it.toUiModel() }
         }
     }
 

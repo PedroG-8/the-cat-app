@@ -1,6 +1,7 @@
 package com.myapps.thecatapp
 
 import android.app.Application
+import com.myapps.thecatapp.di.databaseModule
 import com.myapps.thecatapp.di.networkModule
 import com.myapps.thecatapp.di.repositoryModule
 import com.myapps.thecatapp.di.useCaseModule
@@ -14,6 +15,7 @@ class TheCatApp : Application() {
         startKoin {
             androidContext(this@TheCatApp)
             modules(
+                databaseModule,
                 networkModule,
                 repositoryModule,
                 useCaseModule,

@@ -1,8 +1,10 @@
 package com.myapps.thecatapp.di
 
+import androidx.room.Room
 import com.myapps.thecatapp.BuildConfig
+import com.myapps.thecatapp.data.local.CatDatabase
 import com.myapps.thecatapp.data.remote.CatApiService
-import com.myapps.thecatapp.data.repository.CatRepositoryImpl
+import com.myapps.thecatapp.data.remote.repository.CatRepositoryImpl
 import com.myapps.thecatapp.domain.repository.CatRepository
 import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
@@ -14,6 +16,19 @@ import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
+val databaseModule = module {
+    single {
+        Room.databaseBuilder(
+            get(),
+            CatDatabase::class.java,
+            "cats.db"
+        ).build()
+    }
+    single {
+        get<CatDatabase>().catDao
+    }
+}
 
 val networkModule = module {
     single {
@@ -38,7 +53,7 @@ val networkModule = module {
 }
 
 val repositoryModule = module {
-    single<CatRepository> { CatRepositoryImpl(get()) }
+    single<CatRepository> { CatRepositoryImpl(get(), get()) }
 }
 
 val useCaseModule = module {

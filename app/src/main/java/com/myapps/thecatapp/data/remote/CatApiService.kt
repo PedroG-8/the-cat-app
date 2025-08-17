@@ -1,8 +1,8 @@
 package com.myapps.thecatapp.data.remote
 
-import com.myapps.thecatapp.data.model.CatDto
-import com.myapps.thecatapp.data.model.FavouriteDto
-import com.myapps.thecatapp.data.model.FavouriteRequest
+import com.myapps.thecatapp.data.remote.model.CatDto
+import com.myapps.thecatapp.data.remote.model.FavouriteDto
+import com.myapps.thecatapp.data.remote.model.FavouriteRequest
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE

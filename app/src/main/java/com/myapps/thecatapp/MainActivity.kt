@@ -4,10 +4,21 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
@@ -24,7 +35,38 @@ class MainActivity : ComponentActivity() {
         setContent {
             TheCatAppTheme {
                 val navController = rememberNavController()
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    bottomBar = {
+                        BottomAppBar(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(100.dp)
+                        ) {
+                            Icon(
+                                modifier = Modifier
+                                    .clickable {
+                                        navController.navigate(Route.Home)
+                                    }
+                                    .padding(start = 32.dp)
+                                    .size(32.dp),
+                                imageVector = Icons.Default.Home,
+                                contentDescription = "Home Screen"
+                            )
+                            Spacer(modifier = Modifier.weight(1f))
+                            Icon(
+                                modifier = Modifier
+                                    .clickable {
+                                        navController.navigate(Route.Favourites)
+                                    }
+                                    .padding(end = 32.dp)
+                                    .size(32.dp),
+                                imageVector = Icons.Default.Favorite,
+                                contentDescription = "Favourites Screen"
+                            )
+                        }
+                    }
+                ) { innerPadding ->
                     NavHost(
                         navController = navController,
                         startDestination = Route.HomeGraph
@@ -34,12 +76,14 @@ class MainActivity : ComponentActivity() {
                         ) {
                             composable<Route.Home> {
                                 CatScreen(
-                                    modifier = Modifier.padding(innerPadding)
+                                    modifier = Modifier.padding(innerPadding),
+                                    goToDetail = { navController.navigate(Route.Detail) }
                                 )
                             }
                             composable<Route.Favourites> {
                                 FavouritesScreen(
-                                    modifier = Modifier.padding(innerPadding)
+                                    modifier = Modifier.padding(innerPadding),
+                                    goToDetail = { navController.navigate(Route.Detail) }
                                 )
                             }
                             composable<Route.Detail> {

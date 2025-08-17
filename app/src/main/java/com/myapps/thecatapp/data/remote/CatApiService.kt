@@ -20,6 +20,11 @@ interface CatApiService {
         @Query("page") page: Int = 0
     ): List<CatDto>
 
+    @GET("v1/images/{image_id}")
+    suspend fun getCat(
+        @Path("image_id") imageId: String
+    ): CatDto
+
     @GET("v1/favourites")
     suspend fun getFavourites(): List<FavouriteDto>
 

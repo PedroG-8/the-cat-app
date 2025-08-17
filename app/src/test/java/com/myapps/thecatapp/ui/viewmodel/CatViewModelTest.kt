@@ -32,7 +32,6 @@ class CatViewModelTest {
         addCatToFavouritesUseCase = mockk()
         viewModel = CatViewModel(
             getCatsWithFavouritesUseCase,
-            getFavouriteCatsUseCase,
             addCatToFavouritesUseCase,
             removeCatFromFavouritesUseCase
         )

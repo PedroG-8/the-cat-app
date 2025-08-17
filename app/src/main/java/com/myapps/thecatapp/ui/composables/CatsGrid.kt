@@ -32,9 +32,10 @@ import com.myapps.thecatapp.domain.model.Cat
 fun CatsGrid(
     modifier: Modifier = Modifier,
     catBreeds: List<Cat>,
-    addOrRemoveFromFavourits: (String) -> Unit,
+    addOrRemoveFromFavourits: (String) -> Unit = {},
     loadNextPage: () -> Unit = {},
-    goToDetail: () -> Unit
+    goToDetail: () -> Unit,
+    showLifespan: Boolean = false
 ) {
     val lazyGridState = rememberLazyGridState()
 
@@ -68,6 +69,9 @@ fun CatsGrid(
                         contentDescription = null
                     )
                     Text(text = cat.breed?.name.orEmpty())
+                    if (showLifespan) {
+                        Text(text = cat.breed?.lifespan?.toString().orEmpty())
+                    }
                 }
                 Icon(
                     imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,

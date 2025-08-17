@@ -6,12 +6,14 @@ data class BreedEntity(
     val name: String,
     val origin: String,
     val temperament: String,
-    val description: String
+    val description: String,
+    val lifespan: Int? = null
 ) {
     fun toUiModel() = Breed(
         name = name,
         origin = origin,
         temperament = temperament,
-        description = description
+        description = description,
+        lifespan = lifespan
     )
 }

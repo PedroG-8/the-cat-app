@@ -6,7 +6,6 @@ import com.myapps.thecatapp.domain.model.Cat
 import com.myapps.thecatapp.domain.model.Favourite
 import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
-import com.myapps.thecatapp.domain.usecase.GetFavouriteCatsUseCase
 import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -14,7 +13,6 @@ import kotlinx.coroutines.launch
 
 class CatViewModel(
     private val getCatsWithFavouritesUseCase: GetCatsWithFavouritesUseCase,
-    private val getFavouriteCatsUseCase: GetFavouriteCatsUseCase,
     private val addCatToFavouritesUseCase: AddCatToFavouritesUseCase,
     private val removeCatFromFavouritesUseCase: RemoveCatFromFavouritesUseCase
 ) : ViewModel() {
@@ -43,6 +41,7 @@ class CatViewModel(
                 _isLoading.value = false
                 currentPage += 1
             }.onFailure {
+                _isLoading.value = false
                 _catBreeds.value = emptyList()
             }
         }
@@ -61,16 +60,6 @@ class CatViewModel(
                 _catBreeds.value = _catBreeds.value + nextPage
             }
             _isLoading.value = false
-        }
-    }
-
-    fun getFavourites() {
-        viewModelScope.launch {
-            runCatching {
-                _favourites.value = getFavouriteCatsUseCase()
-            }.onFailure {
-                _favourites.value = emptyList()
-            }
         }
     }
 

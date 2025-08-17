@@ -4,5 +4,6 @@ data class Breed(
     val name: String,
     val origin: String,
     val temperament: String,
-    val description: String
+    val description: String,
+    val lifespan: Int?
 )

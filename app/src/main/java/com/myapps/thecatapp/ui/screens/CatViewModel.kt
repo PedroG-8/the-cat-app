@@ -25,13 +25,38 @@ class CatViewModel(
     private val _favourites = MutableStateFlow<List<Favourite>>(emptyList())
     val favourites = _favourites.asStateFlow()
 
-    fun loadCatsWithFavourites(page: Int) {
+    private val _isLoading = MutableStateFlow<Boolean>(false)
+    val isLoading = _favourites.asStateFlow()
+
+    private var currentPage = 0
+    private var endReached = false
+
+    fun loadCatsWithFavourites() {
         viewModelScope.launch {
             runCatching {
-                _catBreeds.value = getCatsWithFavouritesUseCase(page = page)
+                _isLoading.value = true
+                _catBreeds.value = getCatsWithFavouritesUseCase(page = currentPage)
+                _isLoading.value = false
+                currentPage += 1
             }.onFailure {
                 _catBreeds.value = emptyList()
             }
+        }
+    }
+
+    fun loadNextPage() {
+        if (endReached || _isLoading.value) return
+
+        viewModelScope.launch {
+            _isLoading.value = true
+            val nextPage = getCatsWithFavouritesUseCase(page = currentPage)
+            if (nextPage.isEmpty()) {
+                endReached = true
+            } else {
+                currentPage += 1
+                _catBreeds.value = _catBreeds.value + nextPage
+            }
+            _isLoading.value = false
         }
     }
 

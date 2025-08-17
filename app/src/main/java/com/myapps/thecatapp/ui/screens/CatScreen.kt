@@ -29,7 +29,7 @@ fun CatScreen(
     var breedSearch by remember { mutableStateOf("") }
 
     LaunchedEffect(Unit) {
-        catViewModel.loadCatsWithFavourites(0)
+        catViewModel.loadCatsWithFavourites()
     }
 
     Column(
@@ -49,6 +49,7 @@ fun CatScreen(
             modifier = Modifier.weight(1f),
             catBreeds = catBreeds,
             addOrRemoveFromFavourits = catViewModel::addOrRemoveCatFromFavourites,
+            loadNextPage = catViewModel::loadNextPage,
             goToDetail = goToDetail
         )
     }

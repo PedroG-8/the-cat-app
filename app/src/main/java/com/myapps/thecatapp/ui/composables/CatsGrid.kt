@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,10 +33,16 @@ fun CatsGrid(
     modifier: Modifier = Modifier,
     catBreeds: List<Cat>,
     addOrRemoveFromFavourits: (String) -> Unit,
+    loadNextPage: () -> Unit,
     goToDetail: () -> Unit
 ) {
+    val lazyGridState = rememberLazyGridState()
+    LaunchedEffect(lazyGridState.canScrollForward) {
+        if (!lazyGridState.canScrollForward) loadNextPage()
+    }
     LazyVerticalGrid(
         modifier = modifier,
+        state = lazyGridState,
         columns = GridCells.Fixed(2),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp)
@@ -62,9 +70,11 @@ fun CatsGrid(
                 Icon(
                     imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                     contentDescription = "Favourites",
-                    modifier = Modifier.align(Alignment.TopEnd).clickable {
-                        addOrRemoveFromFavourits(cat.imageId)
-                    }
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .clickable {
+                            addOrRemoveFromFavourits(cat.imageId)
+                        }
                 )
             }
         }

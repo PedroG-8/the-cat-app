@@ -16,7 +16,7 @@ interface CatApiService {
     suspend fun getCatBreeds(
         @Query("has_breeds") hasBreeds: Boolean = true,
         @Query("order") order: String = "ASC",
-        @Query("limit") limit: Int = 21,
+        @Query("limit") limit: Int = 20,
         @Query("page") page: Int = 0
     ): List<CatDto>
 

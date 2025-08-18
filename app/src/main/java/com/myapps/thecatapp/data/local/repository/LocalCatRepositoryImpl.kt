@@ -14,4 +14,5 @@ class LocalCatRepositoryImpl(
     override suspend fun searchBreed(breed: String): List<Cat> {
         return catDao.searchBreeds(breed).map { it.toUiModel() }
     }
+
 }

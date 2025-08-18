@@ -19,10 +19,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.myapps.thecatapp.app.composables.CatAppBar
+import com.myapps.thecatapp.app.theme.TheCatAppTheme
 import com.myapps.thecatapp.ui.screens.CatScreen
 import com.myapps.thecatapp.ui.screens.DetailScreen
 import com.myapps.thecatapp.ui.screens.FavouritesScreen
-import com.myapps.thecatapp.app.theme.TheCatAppTheme
 
 @Composable
 fun App() {
@@ -38,7 +38,7 @@ fun App() {
                 CatAppBar(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(100.dp),
+                        .height(120.dp),
                     navController = navController,
                     selectedPage = selectedPage
                 )

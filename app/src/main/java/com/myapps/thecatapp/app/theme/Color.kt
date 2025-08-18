@@ -11,5 +11,7 @@ val MediumGray = Color(0xFF6F7070)
 val MarineBlue = Color(0xFF5D7D86)
 val LightGray = Color(0xFFE2E0E0)
 val Gray = Color(0xFF595858)
+val LighterGray = Color(0xFF858383)
+
 
 

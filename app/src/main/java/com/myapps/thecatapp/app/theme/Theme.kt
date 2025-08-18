@@ -14,25 +14,28 @@ val LightColorScheme = lightColorScheme(
     background = White,
     surface = White,
     onSurface = LightGray,
+    onSurfaceVariant = LighterGray,
     primary = White,
     primaryContainer = LightBlue,
     onPrimaryContainer = White,
     secondaryContainer = White,
     onSecondaryContainer = MarineBlue,
     tertiaryContainer = MarineBlue,
-
+    outlineVariant = LightBlue
 )
 
 val DarkColorScheme = darkColorScheme(
     background = White,
     surface = DarkGray,
     onSurface = Gray,
+    onSurfaceVariant = White,
     primary = White,
     primaryContainer = MediumGray,
     onPrimaryContainer = White,
     secondaryContainer = White,
     onSecondaryContainer = Black,
-    tertiaryContainer = DarkGray
+    tertiaryContainer = DarkGray,
+    outlineVariant = White
 )
 
 @Composable

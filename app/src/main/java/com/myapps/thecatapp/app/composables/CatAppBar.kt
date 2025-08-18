@@ -1,6 +1,5 @@
 package com.myapps.thecatapp.app.composables
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.PaddingValues
@@ -52,7 +51,6 @@ fun CatAppBar(
             Icon(
                 modifier = Modifier
                     .clickable { navController.navigate(Route.Home) }
-                    .padding(start = 32.dp)
                     .size(32.dp),
                 imageVector = Icons.Default.Home,
                 contentDescription = "Home Screen",

@@ -12,6 +12,8 @@ import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetFavouriteCatsUseCase
 import com.myapps.thecatapp.domain.usecase.GetLocalCatDataUseCase
+import com.myapps.thecatapp.domain.usecase.GetLocalCatsUseCase
+import com.myapps.thecatapp.domain.usecase.GetLocalFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.SearchBreedUseCase
 import com.myapps.thecatapp.ui.screens.CatViewModel
@@ -70,6 +72,8 @@ val useCaseModule = module {
     factory { RemoveCatFromFavouritesUseCase(get()) }
     factory { GetLocalCatDataUseCase(get()) }
     factory { SearchBreedUseCase(get()) }
+    factory { GetLocalCatsUseCase(get()) }
+    factory { GetLocalFavouritesUseCase(get()) }
 }
 
 val viewModelModule = module {

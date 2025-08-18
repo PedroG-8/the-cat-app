@@ -33,12 +33,14 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
-import com.myapps.thecatapp.domain.model.Cat
+import com.myapps.thecatapp.R
 import com.myapps.thecatapp.app.theme.White
+import com.myapps.thecatapp.domain.model.Cat
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -100,7 +102,7 @@ fun Detail(
             Icon(
                 modifier = Modifier.padding(start = 8.dp).clickable { addOrRemoveFromFavourites() },
                 imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = "Favourites",
+                contentDescription = stringResource(R.string.favourites),
                 tint = White
             )
         }
@@ -113,7 +115,7 @@ fun Detail(
             Icon(
                 modifier = Modifier.size(16.dp),
                 imageVector = Icons.Default.LocationOn,
-                contentDescription = "Location",
+                contentDescription = stringResource(R.string.location),
                 tint = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Text(
@@ -152,7 +154,7 @@ fun Detail(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "About",
+            text = stringResource(R.string.about),
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             fontSize = 18.sp
         )

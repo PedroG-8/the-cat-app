@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CatDao {
-
     @Upsert
     suspend fun upsertCat(cats: CatEntity)
     @Update
@@ -20,10 +19,10 @@ interface CatDao {
     suspend fun getCatByImageId(imageId: String): CatEntity?
     @Query("SELECT * FROM cats LIMIT :limit OFFSET :offset")
     suspend fun getCats(limit: Int = 20, offset: Int): List<CatEntity>
-    @Query("SELECT * FROM cats WHERE isFavourite = 1")
-    suspend fun getFavourites(): List<CatEntity>
+    @Query("SELECT * FROM cats WHERE isFavourite = 1 ORDER BY name ")
+    fun getFavourites(): Flow<List<CatEntity>>
     @Query("SELECT * FROM cats WHERE name LIKE '%' || :breed || '%'")
     suspend fun searchBreeds(breed: String): List<CatEntity>
-    @Query("SELECT * FROM cats")
+    @Query("SELECT * FROM cats ORDER BY name")
     fun getAllCats(): Flow<List<CatEntity>>
 }

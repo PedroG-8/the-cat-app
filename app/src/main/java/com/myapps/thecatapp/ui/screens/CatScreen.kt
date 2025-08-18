@@ -1,9 +1,11 @@
 package com.myapps.thecatapp.ui.screens
 
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -32,33 +34,38 @@ fun CatScreen(
 
     var breedSearch by remember { mutableStateOf("") }
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(top = 32.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+            .padding(top = 32.dp)
     ) {
-        BreedSearchBar(
-            modifier = Modifier.padding(bottom = 32.dp),
-            breed = breedSearch,
-            onChangeBreed = {
-                coroutineScope.launch {
-                    breedSearch = it
-                    catViewModel.searchBreed(breedSearch)
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            BreedSearchBar(
+                modifier = Modifier.padding(bottom = 32.dp),
+                breed = breedSearch,
+                onChangeBreed = {
+                    coroutineScope.launch {
+                        breedSearch = it
+                        catViewModel.searchBreed(breedSearch)
+                    }
                 }
-            }
-        )
+            )
 
-        CatsGrid(
-            modifier = Modifier.weight(1f),
-            catBreeds = if (breedSearch.isEmpty()) catBreeds else searchedBreeds,
-            addOrRemoveFromFavourites = catViewModel::addOrRemoveCatFromFavourites,
-            loadNextPage = catViewModel::loadPage,
-            goToDetail = goToDetail
-        )
-
+            CatsGrid(
+                modifier = Modifier.weight(1f),
+                catBreeds = if (breedSearch.isEmpty()) catBreeds else searchedBreeds,
+                addOrRemoveFromFavourites = catViewModel::addOrRemoveCatFromFavourites,
+                loadNextPage = catViewModel::loadPage,
+                goToDetail = goToDetail
+            )
+        }
         if (isLoading) {
-            CircularProgressIndicator(modifier = Modifier.padding(16.dp))
+            CircularProgressIndicator(
+                modifier = Modifier.padding(16.dp).align(Alignment.BottomCenter),
+                color = MaterialTheme.colorScheme.tertiaryContainer
+            )
         }
     }
 }

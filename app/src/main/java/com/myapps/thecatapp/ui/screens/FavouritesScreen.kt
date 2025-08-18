@@ -1,10 +1,8 @@
 package com.myapps.thecatapp.ui.screens
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -19,20 +17,23 @@ fun FavouritesScreen(
     goToDetail: (String) -> Unit,
 ) {
     val favouritesViewModel = koinViewModel<FavouritesViewModel>()
-    val favouriteCats by favouritesViewModel.favouriteCats.collectAsState()
-    val isLoading by favouritesViewModel.isLoading.collectAsState()
+    val favouriteCatBreeds by favouritesViewModel.favouriteCatBreeds.collectAsState()
 
-    Column(
+    Box(
         modifier = modifier
             .fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
-        CatsGrid(
-            modifier = Modifier.weight(1f),
-            catBreeds = favouriteCats.filter { it.isFavourite },
-            goToDetail = goToDetail,
-            addOrRemoveFromFavourites = favouritesViewModel::removeCatFromFavourites,
-            showLifespan = true
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            CatsGrid(
+                modifier = Modifier.weight(1f),
+                catBreeds = favouriteCatBreeds,
+                goToDetail = goToDetail,
+                addOrRemoveFromFavourites = favouritesViewModel::removeCatFromFavourites,
+                showLifespan = true
+            )
+        }
     }
 }

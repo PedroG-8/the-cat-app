@@ -13,8 +13,10 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.myapps.thecatapp.R
 import com.myapps.thecatapp.app.theme.Transparent
 
 @Composable
@@ -40,7 +42,7 @@ fun BreedSearchBar(
         placeholder = {
             Text(
                 modifier = Modifier,
-                text = "Search breed",
+                text = stringResource(R.string.search_breed),
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 fontSize = 14.sp
@@ -57,7 +59,7 @@ fun BreedSearchBar(
             ) {
                 Icon(
                     imageVector = Icons.Default.Search,
-                    contentDescription = "Search breed",
+                    contentDescription = stringResource(R.string.search_breed),
                     tint = MaterialTheme.colorScheme.onSurface
                 )
             }

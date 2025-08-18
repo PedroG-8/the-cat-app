@@ -21,9 +21,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
+import com.myapps.thecatapp.R
 import com.myapps.thecatapp.app.Route
 import com.myapps.thecatapp.app.theme.White
 
@@ -45,7 +47,7 @@ fun CatAppBar(
                     .background(MaterialTheme.colorScheme.tertiaryContainer)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 icon = Icons.Default.Home,
-                name = "Home"
+                name = stringResource(R.string.home)
             )
         } else {
             Icon(
@@ -53,7 +55,7 @@ fun CatAppBar(
                     .clickable { navController.navigate(Route.Home) }
                     .size(32.dp),
                 imageVector = Icons.Default.Home,
-                contentDescription = "Home Screen",
+                contentDescription = stringResource(R.string.home),
                 tint = White
             )
         }
@@ -67,7 +69,7 @@ fun CatAppBar(
                     .background(MaterialTheme.colorScheme.tertiaryContainer)
                     .padding(horizontal = 12.dp, vertical = 8.dp),
                 icon = Icons.Default.Favorite,
-                name = "Favourites"
+                name = stringResource(R.string.favourites)
             )
         } else {
             Icon(
@@ -75,7 +77,7 @@ fun CatAppBar(
                     .clickable { navController.navigate(Route.Favourites) }
                     .size(32.dp),
                 imageVector = Icons.Default.Favorite,
-                contentDescription = "Favourites Screen",
+                contentDescription = stringResource(R.string.favourites),
                 tint = White
             )
         }

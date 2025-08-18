@@ -1,13 +1,13 @@
 package com.myapps.thecatapp.data.remote.repository
 
-import android.content.Context
 import com.myapps.thecatapp.data.local.CatDao
 import com.myapps.thecatapp.data.local.CatPreferences
 import com.myapps.thecatapp.data.local.model.CatEntity
 import com.myapps.thecatapp.data.remote.CatApiService
+import com.myapps.thecatapp.data.remote.model.FavouriteDto
 import com.myapps.thecatapp.data.remote.model.FavouriteRequest
 import com.myapps.thecatapp.domain.repository.CatRepository
-import com.myapps.thecatapp.extensions.isOnline
+import com.myapps.thecatapp.extensions.NetworkChecker
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ class CatRepositoryImpl(
     private val api: CatApiService,
     private val catDao: CatDao,
     private val prefs: CatPreferences,
-    private val context: Context
+    private val networkChecker: NetworkChecker
 ) : CatRepository {
     private var currentPage: Int = 0
     private var endReached = false
@@ -31,38 +31,38 @@ class CatRepositoryImpl(
     }
 
     override suspend fun getCatsWithFavourites() {
-        if (endReached || !context.isOnline()) return
+        if (endReached || !networkChecker.isOnline()) return
 
         val cats = api.getCatBreeds(page = currentPage)
+        val favourites = api.getFavourites()
+
+        if (cats.isEmpty() && favourites.isEmpty()) return
+
         catDao.upsertCats(cats.map { it.toEntity() })
+        syncFavourites(favourites)
 
         currentPage++
         prefs.saveLastPage(currentPage)
-
-        syncFavourites()
     }
 
-    override suspend fun syncFavourites() {
-        if (context.isOnline()) {
-            val favourites = api.getFavourites()
-            favourites.forEach { fav ->
-                val currentCat = catDao.getCatByImageId(fav.image.id)
-                if (currentCat != null) {
-                    catDao.updateCat(
-                        currentCat.copy(
-                            isFavourite = true,
-                            favouriteId = fav.id
-                        )
+    override suspend fun syncFavourites(favourites: List<FavouriteDto>) {
+        favourites.forEach { fav ->
+            val currentCat = catDao.getCatByImageId(fav.image.id)
+            if (currentCat != null) {
+                catDao.updateCat(
+                    currentCat.copy(
+                        isFavourite = true,
+                        favouriteId = fav.id
                     )
-                } else {
-                    val newCat = getCat(fav.image.id)
-                    catDao.upsertCat(
-                        newCat.copy(
-                            isFavourite = true,
-                            favouriteId = fav.id
-                        )
+                )
+            } else {
+                val newCat = getCat(fav.image.id)
+                catDao.upsertCat(
+                    newCat.copy(
+                        isFavourite = true,
+                        favouriteId = fav.id
                     )
-                }
+                )
             }
         }
     }

@@ -1,5 +1,8 @@
 package com.myapps.thecatapp.di
 
+import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.room.Room
 import com.myapps.thecatapp.BuildConfig
 import com.myapps.thecatapp.data.local.CatDatabase
@@ -12,12 +15,13 @@ import com.myapps.thecatapp.domain.repository.CatRepository
 import com.myapps.thecatapp.domain.repository.LocalCatRepository
 import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
-import com.myapps.thecatapp.domain.usecase.GetFavouriteCatsUseCase
 import com.myapps.thecatapp.domain.usecase.GetLocalCatDataUseCase
 import com.myapps.thecatapp.domain.usecase.GetLocalCatsUseCase
 import com.myapps.thecatapp.domain.usecase.GetLocalFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.SearchBreedUseCase
+import com.myapps.thecatapp.extensions.NetworkChecker
+import com.myapps.thecatapp.extensions.NetworkCheckerImpl
 import com.myapps.thecatapp.ui.screens.CatViewModel
 import com.myapps.thecatapp.ui.screens.DetailViewModel
 import com.myapps.thecatapp.ui.screens.FavouritesViewModel
@@ -60,11 +64,12 @@ val networkModule = module {
             .build()
             .create(CatApiService::class.java)
     }
+    single<NetworkChecker> { NetworkCheckerImpl(get()) }
 }
 
 val preferencesModule = module {
-    single { get<android.content.Context>().dataStore }
-    single { CatPreferences(get()) }                    // wrap in CatPreferences
+    single<DataStore<Preferences>> { get<Context>().dataStore }
+    single { CatPreferences(get()) }
 }
 
 val repositoryModule = module {
@@ -74,7 +79,6 @@ val repositoryModule = module {
 
 val useCaseModule = module {
     factory { GetCatsWithFavouritesUseCase(get()) }
-    factory { GetFavouriteCatsUseCase(get()) }
     factory { AddCatToFavouritesUseCase(get()) }
     factory { RemoveCatFromFavouritesUseCase(get()) }
     factory { GetLocalCatDataUseCase(get()) }

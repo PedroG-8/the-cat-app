@@ -1,6 +1,8 @@
 <resources>
     <string name="about">About</string>
     <string name="app_name">TheCatApp</string>
+    <string name="empty_cats">The cat list is empty</string>
+    <string name="empty_favourites">You don\'t have any favourite cats</string>
     <string name="favourites">Favourites</string>
     <string name="home">Home</string>
     <string name="location">Location</string>

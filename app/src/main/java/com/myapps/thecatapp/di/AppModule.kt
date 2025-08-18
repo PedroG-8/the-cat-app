@@ -3,6 +3,8 @@ package com.myapps.thecatapp.di
 import androidx.room.Room
 import com.myapps.thecatapp.BuildConfig
 import com.myapps.thecatapp.data.local.CatDatabase
+import com.myapps.thecatapp.data.local.CatPreferences
+import com.myapps.thecatapp.data.local.dataStore
 import com.myapps.thecatapp.data.local.repository.LocalCatRepositoryImpl
 import com.myapps.thecatapp.data.remote.CatApiService
 import com.myapps.thecatapp.data.remote.repository.CatRepositoryImpl
@@ -60,8 +62,13 @@ val networkModule = module {
     }
 }
 
+val preferencesModule = module {
+    single { get<android.content.Context>().dataStore }
+    single { CatPreferences(get()) }                    // wrap in CatPreferences
+}
+
 val repositoryModule = module {
-    single<CatRepository> { CatRepositoryImpl(get(), get(), get()) }
+    single<CatRepository> { CatRepositoryImpl(get(), get(), get(), get()) }
     single<LocalCatRepository> { LocalCatRepositoryImpl(get()) }
 }
 

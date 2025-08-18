@@ -2,27 +2,43 @@ package com.myapps.thecatapp.data.remote.repository
 
 import android.content.Context
 import com.myapps.thecatapp.data.local.CatDao
+import com.myapps.thecatapp.data.local.CatPreferences
 import com.myapps.thecatapp.data.local.model.CatEntity
 import com.myapps.thecatapp.data.remote.CatApiService
 import com.myapps.thecatapp.data.remote.model.FavouriteRequest
 import com.myapps.thecatapp.domain.repository.CatRepository
 import com.myapps.thecatapp.extensions.isOnline
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 const val LIMIT = 20
 class CatRepositoryImpl(
     private val api: CatApiService,
     private val catDao: CatDao,
+    private val prefs: CatPreferences,
     private val context: Context
 ) : CatRepository {
-    private var currentPage = 0
+    private var currentPage: Int = 0
     private var endReached = false
+
+    init {
+        CoroutineScope(Dispatchers.IO).launch {
+            prefs.lastPageFlow.collect { savedPage ->
+                currentPage = savedPage
+            }
+        }
+    }
 
     override suspend fun getCatsWithFavourites() {
         if (endReached || !context.isOnline()) return
 
         val cats = api.getCatBreeds(page = currentPage)
         catDao.upsertCats(cats.map { it.toEntity() })
+
         currentPage++
+        prefs.saveLastPage(currentPage)
+
         syncFavourites()
     }
 

@@ -11,9 +11,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -22,7 +22,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -39,16 +38,10 @@ fun CatsGrid(
     modifier: Modifier = Modifier,
     catBreeds: List<Cat>,
     addOrRemoveFromFavourites: (String) -> Unit = {},
-    loadNextPage: () -> Unit = {},
+    lazyGridState: LazyGridState,
     goToDetail: (String) -> Unit,
-    showLifespan: Boolean = false
+    isFromFavourites: Boolean = false
 ) {
-    val lazyGridState = rememberLazyGridState()
-
-    LaunchedEffect(lazyGridState.canScrollForward) {
-        if (!lazyGridState.canScrollForward) loadNextPage()
-    }
-
     LazyVerticalGrid(
         modifier = modifier,
         state = lazyGridState,
@@ -97,7 +90,7 @@ fun CatsGrid(
                         )
                     }
 
-                    if (showLifespan) {
+                    if (isFromFavourites) {
                         Text(
                             modifier = Modifier
                                 .align(Alignment.Start),

@@ -33,26 +33,14 @@ class CatViewModel(
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
-    init {
-        loadPage()
-    }
-
     fun loadPage() {
         viewModelScope.launch {
             runCatching {
                 _isLoading.value = true
                 getCatsWithFavouritesUseCase()
-//                if (nextPage.isEmpty()) {
-//                    endReached = true
-//                } else {
-//                    currentPage += 1
-////                    _catBreeds.value = _catBreeds.value + nextPage
-//                }
                 _isLoading.value = false
             }.onFailure {
                 _isLoading.value = false
-//                _catBreeds.value = emptyList()
-
             }
         }
     }

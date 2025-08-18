@@ -9,7 +9,7 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.myapps.thecatapp.ui.theme.Transparent
+import com.myapps.thecatapp.app.theme.Transparent
 
 @Composable
 fun BreedSearchBar(

@@ -1,4 +1,4 @@
-package com.myapps.thecatapp.ui.theme
+package com.myapps.thecatapp.app.theme
 
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
@@ -11,21 +11,28 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 val LightColorScheme = lightColorScheme(
-    primary = White,
+    background = White,
     surface = White,
+    onSurface = LightGray,
+    primary = White,
     primaryContainer = LightBlue,
     onPrimaryContainer = White,
     secondaryContainer = White,
-    onSecondaryContainer = MarineBlue
+    onSecondaryContainer = MarineBlue,
+    tertiaryContainer = MarineBlue,
+
 )
 
 val DarkColorScheme = darkColorScheme(
-    primary = White,
+    background = White,
     surface = DarkGray,
-    primaryContainer = LightGray,
+    onSurface = Gray,
+    primary = White,
+    primaryContainer = MediumGray,
     onPrimaryContainer = White,
     secondaryContainer = White,
-    onSecondaryContainer = Black
+    onSecondaryContainer = Black,
+    tertiaryContainer = DarkGray
 )
 
 @Composable

@@ -1,4 +1,4 @@
-package com.myapps.thecatapp
+package com.myapps.thecatapp.app
 
 import kotlinx.serialization.Serializable
 

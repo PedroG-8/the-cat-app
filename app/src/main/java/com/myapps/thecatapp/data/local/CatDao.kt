@@ -12,7 +12,7 @@ interface CatDao {
     @Upsert
     suspend fun upsertCat(cats: CatEntity)
     @Update
-    suspend fun updateCat(cats: CatEntity)
+    suspend fun updateCat(cat: CatEntity)
     @Upsert
     suspend fun upsertCats(cats: List<CatEntity>)
     @Query("SELECT * FROM cats WHERE imageId = :imageId LIMIT 1")

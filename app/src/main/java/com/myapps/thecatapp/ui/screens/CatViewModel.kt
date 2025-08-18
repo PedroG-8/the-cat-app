@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.myapps.thecatapp.domain.model.Cat
 import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
+import com.myapps.thecatapp.domain.usecase.GetLocalCatDataUseCase
 import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.SearchBreedUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
 class CatViewModel(
+    private val getLocalCatDataUseCase: GetLocalCatDataUseCase,
     private val getCatsWithFavouritesUseCase: GetCatsWithFavouritesUseCase,
     private val addCatToFavouritesUseCase: AddCatToFavouritesUseCase,
     private val removeCatFromFavouritesUseCase: RemoveCatFromFavouritesUseCase,
@@ -60,7 +62,7 @@ class CatViewModel(
         viewModelScope.launch {
             val currentCat = _catBreeds.value.find { it.imageId == imageId } ?: return@launch
             if (currentCat.isFavourite) {
-                currentCat.favouriteId?.let { removeCatFromFavourites(it) }
+                removeCatFromFavourites(imageId)
             } else {
                 addCatToFavourites(imageId)
             }
@@ -87,10 +89,11 @@ class CatViewModel(
     private fun addCatToFavourites(imageId: String) {
         viewModelScope.launch {
             val success = addCatToFavouritesUseCase(imageId)
-            if (success) {
+            val editedCat = getLocalCatDataUseCase.invoke(imageId)
+            if (success && editedCat != null) {
                 val updatedList = _catBreeds.value.map { cat ->
                     if (cat.imageId == imageId) {
-                        cat.copy(isFavourite = true)
+                        editedCat
                     } else {
                         cat
                     }
@@ -100,13 +103,14 @@ class CatViewModel(
         }
     }
 
-    private fun removeCatFromFavourites(favouriteId: String) {
+    private fun removeCatFromFavourites(imageId: String) {
         viewModelScope.launch {
-            val success = removeCatFromFavouritesUseCase(favouriteId)
-            if (success) {
+            val success = removeCatFromFavouritesUseCase(imageId)
+            val editedCat = getLocalCatDataUseCase.invoke(imageId)
+            if (success && editedCat != null) {
                 val updatedList = _catBreeds.value.map { cat ->
-                    if (cat.favouriteId == favouriteId) {
-                        cat.copy(isFavourite = false)
+                    if (cat.imageId == imageId) {
+                        editedCat
                     } else {
                         cat
                     }

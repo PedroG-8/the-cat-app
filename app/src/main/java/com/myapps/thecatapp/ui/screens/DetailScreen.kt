@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -37,30 +38,38 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.myapps.thecatapp.domain.model.Cat
-import com.myapps.thecatapp.ui.theme.White
+import com.myapps.thecatapp.app.theme.White
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun DetailScreen(
     modifier: Modifier = Modifier,
-    imageId: String
+    imageId: String,
+    goBack: () -> Unit
 ) {
     val detailViewModel = koinViewModel<DetailViewModel>()
     val cat by detailViewModel.catData.collectAsState()
+    val isLoading by detailViewModel.isLoading.collectAsState()
 
     LaunchedEffect(Unit) {
         detailViewModel.getCatData(imageId)
     }
 
-    if (cat == null) {
-    } else {
-        Detail(modifier = modifier, cat = cat!!)
+    if (isLoading) {
+        LinearProgressIndicator()
+    } else if (cat != null) {
+        Detail(
+            modifier = modifier,
+            cat = cat!!,
+            addOrRemoveFromFavourites = detailViewModel::addOrRemoveCatFromFavourites
+        )
     }
 }
 
 @Composable
 fun Detail(
     modifier: Modifier = Modifier,
+    addOrRemoveFromFavourites: () -> Unit,
     cat: Cat
 ) {
     Column(
@@ -89,7 +98,7 @@ fun Detail(
                 fontWeight = FontWeight.Bold
             )
             Icon(
-                modifier = Modifier.padding(start = 8.dp).clickable { /* addOrRemoveFromFavourites(cat.imageId)*/ },
+                modifier = Modifier.padding(start = 8.dp).clickable { addOrRemoveFromFavourites() },
                 imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                 contentDescription = "Favourites",
                 tint = White

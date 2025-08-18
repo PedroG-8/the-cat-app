@@ -29,7 +29,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.myapps.thecatapp.domain.model.Cat
-import com.myapps.thecatapp.ui.theme.White
+import com.myapps.thecatapp.app.theme.White
 
 @Composable
 fun CatsGrid(

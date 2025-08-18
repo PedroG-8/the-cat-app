@@ -38,8 +38,7 @@ fun CatScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding()
-            .background(color = MaterialTheme.colorScheme.surface),
+            .padding(top = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BreedSearchBar(

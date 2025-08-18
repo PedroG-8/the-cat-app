@@ -1,4 +1,4 @@
-package com.myapps.thecatapp.ui.theme
+package com.myapps.thecatapp.app.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle

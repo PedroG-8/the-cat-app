@@ -3,6 +3,7 @@ package com.myapps.thecatapp.data.remote
 import com.myapps.thecatapp.data.remote.model.CatDto
 import com.myapps.thecatapp.data.remote.model.FavouriteDto
 import com.myapps.thecatapp.data.remote.model.FavouriteRequest
+import com.myapps.thecatapp.data.remote.model.AddFavouriteResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -31,7 +32,7 @@ interface CatApiService {
     @POST("v1/favourites")
     suspend fun addToFavourites(
         @Body request: FavouriteRequest
-    ): Response<Unit>
+    ): Response<AddFavouriteResponse>
 
     @DELETE("v1/favourites/{favourite_id}")
     suspend fun removeFromFavourites(

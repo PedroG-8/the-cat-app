@@ -5,7 +5,7 @@ import com.myapps.thecatapp.domain.repository.CatRepository
 class RemoveCatFromFavouritesUseCase(
     private val repository: CatRepository
 ) {
-    suspend operator fun invoke(favouriteId: String): Boolean {
-        return repository.removeFromFavourites(favouriteId)
+    suspend operator fun invoke(imageId: String): Boolean {
+        return repository.removeFromFavourites(imageId)
     }
 }

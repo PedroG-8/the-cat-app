@@ -67,16 +67,39 @@ class CatRepositoryImpl(
 
     override suspend fun addToFavourites(imageId: String): Boolean {
         return runCatching {
-            api.addToFavourites(FavouriteRequest(imageId))
+            val response = api.addToFavourites(FavouriteRequest(imageId))
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null) {
+                    val cat = catDao.getCatByImageId(imageId)
+                    cat?.let {
+                        catDao.updateCat(
+                            it.copy(
+                                isFavourite = true,
+                                favouriteId = body.id
+                            )
+                        )
+                    }
+                }
+            }
             true
         }.getOrElse {
             false
         }
     }
 
-    override suspend fun removeFromFavourites(favouriteId: String): Boolean {
+    override suspend fun removeFromFavourites(imageId: String): Boolean {
         return runCatching {
-            api.removeFromFavourites(favouriteId)
+            val cat = catDao.getCatByImageId(imageId)
+            cat?.let { cat ->
+                cat.favouriteId?.let { api.removeFromFavourites(it) }
+                catDao.updateCat(
+                    cat.copy(
+                        isFavourite = false,
+                        favouriteId = null
+                    )
+                )
+            }
             true
         }.getOrElse {
             false

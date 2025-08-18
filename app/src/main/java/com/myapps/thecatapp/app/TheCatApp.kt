@@ -1,4 +1,4 @@
-package com.myapps.thecatapp
+package com.myapps.thecatapp.app
 
 import android.app.Application
 import com.myapps.thecatapp.di.databaseModule

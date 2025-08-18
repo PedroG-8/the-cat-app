@@ -1,84 +1,92 @@
 package com.myapps.thecatapp.ui.screens
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.FavoriteBorder
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
+import androidx.compose.ui.unit.sp
+import com.myapps.thecatapp.R
+import com.myapps.thecatapp.ui.composables.BreedSearchBar
+import com.myapps.thecatapp.ui.composables.CatsGrid
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun CatScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    goToDetail: (String) -> Unit
 ) {
     val catViewModel = koinViewModel<CatViewModel>()
+    val coroutineScope = rememberCoroutineScope()
     val catBreeds by catViewModel.catBreeds.collectAsState()
+    val searchedBreeds by catViewModel.searchedBreeds.collectAsState()
+    val isLoading by catViewModel.isLoading.collectAsState()
 
-    LaunchedEffect(Unit) {
-        catViewModel.loadCatsWithFavourites(0)
+    var breedSearch by remember { mutableStateOf("") }
+    val lazyGridState = rememberLazyGridState()
+
+    LaunchedEffect(lazyGridState.canScrollForward) {
+        delay(200)
+        if (!lazyGridState.canScrollForward) catViewModel.loadPage()
     }
 
-    Column(
+    Box(
         modifier = modifier
-            .fillMaxSize()
-            .statusBarsPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(top = 32.dp)
     ) {
-        LazyVerticalGrid(
-            columns = GridCells.Fixed(2),
-            verticalArrangement = Arrangement.spacedBy(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        Column(
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            items(catBreeds) { cat ->
-                Box(
-                    modifier = Modifier
-                        .aspectRatio(1f)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(Color.LightGray)
-                        .padding(4.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column {
-                        AsyncImage(
-                            modifier = Modifier.fillMaxHeight(0.75f),
-                            model = cat.url,
-                            contentDescription = null
-                        )
-                        Text(text = cat.breed?.name.orEmpty())
+            BreedSearchBar(
+                modifier = Modifier.padding(bottom = 32.dp),
+                breed = breedSearch,
+                onChangeBreed = {
+                    coroutineScope.launch {
+                        breedSearch = it
+                        catViewModel.searchBreed(breedSearch)
                     }
-                    Icon(
-                        imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                        contentDescription = "Favourites",
-                        modifier = Modifier.align(Alignment.TopEnd).clickable {
-                            catViewModel.addOrRemoveCatFromFavourites(cat.imageId)
-                        }
-                    )
                 }
+            )
+            if (catBreeds.isEmpty()) {
+                Text(
+                    modifier = Modifier,
+                    text = stringResource(R.string.empty_cats),
+                    fontSize = 18.sp,
+                    color = MaterialTheme.colorScheme.primaryContainer
+                )
+            } else {
+                CatsGrid(
+                    modifier = Modifier.weight(1f),
+                    catBreeds = if (breedSearch.isEmpty()) catBreeds else searchedBreeds,
+                    addOrRemoveFromFavourites = catViewModel::addOrRemoveCatFromFavourites,
+                    lazyGridState = lazyGridState,
+                    goToDetail = goToDetail
+                )
             }
+        }
+        if (isLoading) {
+            CircularProgressIndicator(
+                modifier = Modifier.padding(16.dp).align(Alignment.BottomCenter),
+                color = MaterialTheme.colorScheme.tertiaryContainer
+            )
         }
     }
 }

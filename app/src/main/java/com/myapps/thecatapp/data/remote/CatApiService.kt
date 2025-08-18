@@ -1,8 +1,9 @@
 package com.myapps.thecatapp.data.remote
 
-import com.myapps.thecatapp.data.model.CatDto
-import com.myapps.thecatapp.data.model.FavouriteDto
-import com.myapps.thecatapp.data.model.FavouriteRequest
+import com.myapps.thecatapp.data.remote.model.CatDto
+import com.myapps.thecatapp.data.remote.model.FavouriteDto
+import com.myapps.thecatapp.data.remote.model.FavouriteRequest
+import com.myapps.thecatapp.data.remote.model.AddFavouriteResponse
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -16,9 +17,14 @@ interface CatApiService {
     suspend fun getCatBreeds(
         @Query("has_breeds") hasBreeds: Boolean = true,
         @Query("order") order: String = "ASC",
-        @Query("limit") limit: Int = 21,
+        @Query("limit") limit: Int = 20,
         @Query("page") page: Int = 0
     ): List<CatDto>
+
+    @GET("v1/images/{image_id}")
+    suspend fun getCat(
+        @Path("image_id") imageId: String
+    ): CatDto
 
     @GET("v1/favourites")
     suspend fun getFavourites(): List<FavouriteDto>
@@ -26,10 +32,15 @@ interface CatApiService {
     @POST("v1/favourites")
     suspend fun addToFavourites(
         @Body request: FavouriteRequest
-    ): Response<Unit>
+    ): Response<AddFavouriteResponse>
 
     @DELETE("v1/favourites/{favourite_id}")
     suspend fun removeFromFavourites(
         @Path("favourite_id") favouriteId: String
     ): Response<Unit>
+
+    @GET("v1/breeds/search")
+    suspend fun searchBreed(
+        @Query("q") breed: String
+    ): List<CatDto>
 }

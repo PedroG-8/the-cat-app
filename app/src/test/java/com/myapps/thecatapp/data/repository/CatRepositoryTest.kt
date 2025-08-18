@@ -1,71 +1,85 @@
 package com.myapps.thecatapp.data.repository
 
-import com.myapps.thecatapp.data.model.CatDto
-import com.myapps.thecatapp.data.model.FavouriteDto
-import com.myapps.thecatapp.data.model.ImageDto
+import com.myapps.thecatapp.data.local.CatDao
+import com.myapps.thecatapp.data.local.CatPreferences
 import com.myapps.thecatapp.data.remote.CatApiService
+import com.myapps.thecatapp.data.remote.model.CatDto
+import com.myapps.thecatapp.data.remote.model.FavouriteDto
+import com.myapps.thecatapp.data.remote.model.ImageDto
+import com.myapps.thecatapp.data.remote.repository.CatRepositoryImpl
+import com.myapps.thecatapp.extensions.NetworkChecker
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import kotlin.test.Test
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 class CatRepositoryTest {
 
-    private val api = mockk<CatApiService>()
+    private val api = mockk<CatApiService>(relaxed = true)
+    private val dao = mockk<CatDao>(relaxed = true)
+    private val prefs = mockk<CatPreferences>(relaxed = true)
+    private val networkChecker = mockk<NetworkChecker>(relaxed = true)
     private lateinit var repository: CatRepositoryImpl
 
     @Before
     fun setUp() {
-        repository = CatRepositoryImpl(api)
+        repository = CatRepositoryImpl(api, dao, prefs, networkChecker)
     }
 
     @Test
-    fun givenApiReturnsCatBreeds_whenGetCatBreeds_thenReturnsMappedCatsWithFavouritesList() = runTest {
+    fun givenApiReturnsCatBreeds_whenGetCatsWithFavourites_thenListOfCatsInsertedIntoRoom() = runTest {
         val apiBreeds = listOf(
-            CatDto(id = "id1", url = "url1", width = 100, height = 100),
-            CatDto(id = "id2", url = "url2", width = 120, height = 120)
+            CatDto(id = "id1", url = "url1"),
+            CatDto(id = "id2", url = "url2")
         )
         val favourites = listOf(
             FavouriteDto(id = "id1", image = ImageDto(id = "imgId_1", url = "img_url1"))
         )
-        coEvery { api.getCatBreeds(page = 0) } returns apiBreeds
+        coEvery { networkChecker.isOnline() } returns true
+        coEvery { api.getCatBreeds() } returns apiBreeds
         coEvery { api.getFavourites() } returns favourites
 
-        val result = repository.getCatsWithFavourites(page = 0)
+        repository.getCatsWithFavourites()
 
-        assertEquals(apiBreeds.map { it.toEntity() }, result)
-        coVerify { api.getCatBreeds(page = 0) }
+        coVerify { api.getCatBreeds() }
         coVerify { api.getFavourites() }
+        coVerify { dao.upsertCats(apiBreeds.map { it.toEntity() }) }
+        coVerify { dao.updateCat(any()) }
+        coVerify { dao.getCatByImageId(any()) }
     }
 
     @Test
-    fun givenApiReturnsEmptyList_whenGetCatsWithFavourites_thenReturnsEmptyList() = runTest {
-        coEvery { api.getCatBreeds(page = 0) } returns emptyList()
+    fun givenApiReturnsEmptyList_whenGetCatsWithFavourites_thenListOfCatsNotInsertedIntoRoom() = runTest {
+        coEvery { networkChecker.isOnline() } returns true
+        coEvery { api.getCatBreeds() } returns emptyList()
         coEvery { api.getFavourites() } returns emptyList()
 
-        val result = repository.getCatsWithFavourites(page = 0)
+        repository.getCatsWithFavourites()
 
-        assertTrue(result.isEmpty())
-        coVerify { api.getCatBreeds(page = 0) }
+        coVerify { api.getCatBreeds() }
         coVerify { api.getFavourites() }
+        coVerify(exactly = 0) { dao.upsertCats(any()) }
+        coVerify(exactly = 0) { dao.updateCat(any()) }
+        coVerify(exactly = 0) { dao.getCatByImageId(any()) }
     }
 
     @Test
-    fun givenApiThrowsException_whenGetCatsWithFavourites_thenExceptionPropagates() = runTest {
+    fun givenApiThrowsException_whenGetCatsWithFavourites_thenListOfCatsNotInsertedIntoRoom() = runTest {
         val exception = RuntimeException("Network error")
-        coEvery { api.getCatBreeds(page = 0) } throws exception
+        coEvery { networkChecker.isOnline() } returns true
+        coEvery { api.getCatBreeds() } throws exception
         coEvery { api.getFavourites() } throws exception
 
-        val thrown = assertFailsWith<RuntimeException> {
-            repository.getCatsWithFavourites(page = 0)
+        try {
+            repository.getCatsWithFavourites()
+        } catch (e: RuntimeException) {
+            assertEquals("Network error", e.message)
         }
 
-        assertEquals("Network error", thrown.message)
-        coVerify { api.getCatBreeds(page = 0) }
+        coVerify { api.getCatBreeds() }
+        coVerify(exactly = 0) { api.getFavourites() }
     }
 }

@@ -1,11 +1,13 @@
 package com.myapps.thecatapp.domain.usecase
 
 import com.myapps.thecatapp.domain.model.Cat
-import com.myapps.thecatapp.domain.repository.CatRepository
+import com.myapps.thecatapp.domain.repository.LocalCatRepository
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
 import junit.framework.TestCase.assertTrue
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -14,48 +16,48 @@ import kotlin.test.assertFailsWith
 
 class GetCatBreedsTest {
 
-    private lateinit var getCatBreeds: GetCatsWithFavouritesUseCase
-    private val repository = mockk<CatRepository>()
+    private lateinit var getLocalCats: GetLocalCatsUseCase
+    private val repository = mockk<LocalCatRepository>()
 
     @Before
     fun setUp() {
-        getCatBreeds = GetCatsWithFavouritesUseCase(repository)
+        getLocalCats = GetLocalCatsUseCase(repository)
     }
 
     @Test
-    fun givenRepositoryReturnsCatBreeds_whenGetCatBreeds_thenReturnsCatBreedsList() = runTest {
+    fun givenRepositoryReturnsAllCats_whenGetLocalCats_thenReturnsCatList() = runTest {
         val fakeBreeds = listOf(
             Cat(imageId = "id1", url = "url1"),
             Cat(imageId = "id2", url = "url2")
         )
-        coEvery { repository.getCatsWithFavourites(page = 0) } returns fakeBreeds
+        coEvery { repository.getAllCats() } returns flowOf(fakeBreeds)
 
-        val result = getCatBreeds(page = 0).map { it }
+        val result = getLocalCats().first()
 
         assertEquals(fakeBreeds, result)
-        coVerify { repository.getCatsWithFavourites(page = 0) }
+        coVerify(exactly = 1) { repository.getAllCats() }
     }
 
     @Test
-    fun givenRepositoryReturnsEmptyList_whenGetCatBreeds_thenReturnsEmptyList() = runTest {
-        coEvery { repository.getCatsWithFavourites(page = 0) } returns emptyList()
+    fun givenRepositoryReturnsAllCats_whenGetLocalCats_thenReturnsEmptyList() = runTest {
+        coEvery { repository.getAllCats() } returns flowOf(emptyList())
 
-        val result = getCatBreeds(page = 0)
+        val result = getLocalCats().first()
 
         assertTrue(result.isEmpty())
-        coVerify { repository.getCatsWithFavourites(page = 0) }
+        coVerify(exactly = 1) { repository.getAllCats() }
     }
 
     @Test
     fun givenRepositoryThrowsException_whenGetCatBreeds_thenExceptionIsMapped() = runTest {
         val exception = RuntimeException("Network error")
-        coEvery { repository.getCatsWithFavourites(page = 0) } throws exception
+        coEvery { repository.getAllCats() } throws exception
 
-        val thrown = assertFailsWith<RuntimeException> {
-            getCatBreeds(page = 0)
+        val result = assertFailsWith<RuntimeException> {
+            getLocalCats().first()
         }
 
-        assertEquals("Network error", thrown.message)
-        coVerify { repository.getCatsWithFavourites(page = 0) }
+        assertEquals("Network error", result.message)
+        coVerify(exactly = 1) { repository.getAllCats() }
     }
 }

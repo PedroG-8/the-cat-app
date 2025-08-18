@@ -1,7 +1,9 @@
-package com.myapps.thecatapp
+package com.myapps.thecatapp.app
 
 import android.app.Application
+import com.myapps.thecatapp.di.databaseModule
 import com.myapps.thecatapp.di.networkModule
+import com.myapps.thecatapp.di.preferencesModule
 import com.myapps.thecatapp.di.repositoryModule
 import com.myapps.thecatapp.di.useCaseModule
 import com.myapps.thecatapp.di.viewModelModule
@@ -14,7 +16,9 @@ class TheCatApp : Application() {
         startKoin {
             androidContext(this@TheCatApp)
             modules(
+                databaseModule,
                 networkModule,
+                preferencesModule,
                 repositoryModule,
                 useCaseModule,
                 viewModelModule

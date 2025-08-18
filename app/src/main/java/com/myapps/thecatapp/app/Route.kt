@@ -1,4 +1,4 @@
-package com.myapps.thecatapp
+package com.myapps.thecatapp.app
 
 import kotlinx.serialization.Serializable
 
@@ -13,5 +13,7 @@ sealed interface Route {
     data object Favourites: Route
 
     @Serializable
-    data object Detail: Route
+    data class Detail(
+        val imageId: String
+    ): Route
 }

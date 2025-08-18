@@ -16,6 +16,9 @@ coroutines-test = "1.10.2"
 test-core = "1.4.0"
 compose-navigation = "2.9.3"
 serialization = "1.6.0"
+room = "2.7.2"
+ksp = "2.2.10-2.0.2"
+datastore = "1.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -36,6 +39,9 @@ coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil" }
 # Compose navigation
 compose-navigation = { module = "androidx.navigation:navigation-compose", version.ref = "compose-navigation" }
 
+# Datastore
+androidx-datastore = { module = "androidx.datastore:datastore-preferences", version.ref = "datastore" }
+
 # Koin
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -44,6 +50,11 @@ koin-compose = { module = "io.insert-koin:koin-androidx-compose", version.ref = 
 # Retrofit
 retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 retrofit-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+
+# Room
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
+room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 
 # Serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
@@ -62,4 +73,5 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 jetbrains-kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin"}
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 

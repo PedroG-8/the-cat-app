@@ -1,6 +1,7 @@
 package com.myapps.thecatapp.data.local.model
 
 import com.myapps.thecatapp.domain.model.Breed
+import com.myapps.thecatapp.extensions.csvToList
 
 data class BreedEntity(
     val name: String,
@@ -12,7 +13,7 @@ data class BreedEntity(
     fun toUiModel() = Breed(
         name = name,
         origin = origin,
-        temperament = temperament,
+        temperament = temperament.csvToList(),
         description = description,
         lifespan = lifespan
     )

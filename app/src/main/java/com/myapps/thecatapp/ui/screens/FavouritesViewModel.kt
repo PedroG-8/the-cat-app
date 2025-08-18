@@ -4,13 +4,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myapps.thecatapp.domain.model.Cat
 import com.myapps.thecatapp.domain.usecase.GetFavouriteCatsUseCase
+import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 
 class FavouritesViewModel(
-    private val getFavouriteCatsUseCase: GetFavouriteCatsUseCase
+    private val getFavouriteCatsUseCase: GetFavouriteCatsUseCase,
+    private val removeCatFromFavouritesUseCase: RemoveCatFromFavouritesUseCase
 ) : ViewModel() {
 
     private val _favouriteCats = MutableStateFlow<List<Cat>>(emptyList())
@@ -36,4 +39,14 @@ class FavouritesViewModel(
         }
     }
 
+    fun removeCatFromFavourites(imageId: String) {
+        viewModelScope.launch {
+            val success = removeCatFromFavouritesUseCase(imageId)
+            if (success) {
+                _favouriteCats.update {
+                    it.filterNot { it.imageId == imageId }
+                }
+            }
+        }
+    }
 }

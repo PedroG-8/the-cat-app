@@ -17,16 +17,19 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.myapps.thecatapp.domain.model.Cat
+import com.myapps.thecatapp.ui.theme.White
 
 @Composable
 fun CatsGrid(
@@ -58,30 +61,35 @@ fun CatsGrid(
                         goToDetail(cat.imageId)
                     }
                     .clip(RoundedCornerShape(8.dp))
-                    .background(Color.LightGray)
+                    .background(MaterialTheme.colorScheme.primaryContainer)
                     .padding(4.dp),
                 contentAlignment = Alignment.Center
             ) {
-                Column {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
                     AsyncImage(
                         modifier = Modifier.fillMaxHeight(0.75f),
                         model = cat.url,
                         contentDescription = null
                     )
-                    Text(text = cat.breed?.name.orEmpty())
+                    Text(
+                        text = cat.breed?.name.orEmpty(),
+                        color = White,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    )
                     if (showLifespan) {
                         Text(text = cat.breed?.lifespan?.toString().orEmpty())
                     }
+
+                    Icon(
+                        imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favourites",
+                        modifier = Modifier.clickable { addOrRemoveFromFavourites(cat.imageId) },
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
+                    )
                 }
-                Icon(
-                    imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Favourites",
-                    modifier = Modifier
-                        .align(Alignment.TopEnd)
-                        .clickable {
-                            addOrRemoveFromFavourites(cat.imageId)
-                        }
-                )
             }
         }
     }

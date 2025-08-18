@@ -3,7 +3,6 @@ package com.myapps.thecatapp.ui.screens
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.myapps.thecatapp.domain.model.Cat
-import com.myapps.thecatapp.domain.model.Favourite
 import com.myapps.thecatapp.domain.usecase.AddCatToFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.GetCatsWithFavouritesUseCase
 import com.myapps.thecatapp.domain.usecase.RemoveCatFromFavouritesUseCase
@@ -25,46 +24,35 @@ class CatViewModel(
     private val _searchedBreeds = MutableStateFlow<List<Cat>>(emptyList())
     val searchedBreeds = _searchedBreeds.asStateFlow()
 
-    private val _favourites = MutableStateFlow<List<Favourite>>(emptyList())
-    val favourites = _favourites.asStateFlow()
-
-    private val _isLoading = MutableStateFlow<Boolean>(false)
+    private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
     private var currentPage = 0
     private var endReached = false
 
     init {
-        loadCatsWithFavourites()
+        loadPage()
     }
 
-    fun loadCatsWithFavourites() {
-        viewModelScope.launch {
-            runCatching {
-                _isLoading.value = true
-                _catBreeds.value = getCatsWithFavouritesUseCase(page = currentPage)
-                _isLoading.value = false
-                currentPage += 1
-            }.onFailure {
-                _isLoading.value = false
-                _catBreeds.value = emptyList()
-            }
-        }
-    }
-
-    fun loadNextPage() {
+    fun loadPage() {
         if (endReached || _isLoading.value) return
 
         viewModelScope.launch {
-            _isLoading.value = true
-            val nextPage = getCatsWithFavouritesUseCase(page = currentPage)
-            if (nextPage.isEmpty()) {
-                endReached = true
-            } else {
-                currentPage += 1
-                _catBreeds.value = _catBreeds.value + nextPage
+            runCatching {
+                _isLoading.value = true
+                val nextPage = getCatsWithFavouritesUseCase(page = currentPage)
+                if (nextPage.isEmpty()) {
+                    endReached = true
+                } else {
+                    currentPage += 1
+                    _catBreeds.value = _catBreeds.value + nextPage
+                }
+                _isLoading.value = false
+            }.onFailure {
+                _isLoading.value = false
+                _catBreeds.value = emptyList()
+
             }
-            _isLoading.value = false
         }
     }
 

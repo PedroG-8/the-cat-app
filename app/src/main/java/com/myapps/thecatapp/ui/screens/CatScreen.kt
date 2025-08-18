@@ -1,10 +1,12 @@
 package com.myapps.thecatapp.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -36,8 +38,9 @@ fun CatScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding(),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .statusBarsPadding()
+            .background(color = MaterialTheme.colorScheme.surface),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         BreedSearchBar(
             modifier = Modifier.padding(bottom = 32.dp),
@@ -54,7 +57,7 @@ fun CatScreen(
             modifier = Modifier.weight(1f),
             catBreeds = if (breedSearch.isEmpty()) catBreeds else searchedBreeds,
             addOrRemoveFromFavourites = catViewModel::addOrRemoveCatFromFavourites,
-            loadNextPage = catViewModel::loadNextPage,
+            loadNextPage = catViewModel::loadPage,
             goToDetail = goToDetail
         )
 

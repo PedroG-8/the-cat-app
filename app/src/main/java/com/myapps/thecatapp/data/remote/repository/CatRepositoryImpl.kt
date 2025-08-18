@@ -18,7 +18,7 @@ class CatRepositoryImpl(
 
     override suspend fun getCatsWithFavourites(page: Int): List<Cat> {
         val offset = LIMIT * page
-        if (context.isOnline()) {
+        if (false) {
             val cats = api.getCatBreeds(page = page)
             catDao.upsertCats(cats.map { it.toEntity() })
 

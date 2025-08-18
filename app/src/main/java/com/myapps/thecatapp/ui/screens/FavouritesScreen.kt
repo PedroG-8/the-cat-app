@@ -30,6 +30,7 @@ fun FavouritesScreen(
             modifier = Modifier.weight(1f),
             catBreeds = favouriteCats.filter { it.isFavourite },
             goToDetail = goToDetail,
+            addOrRemoveFromFavourites = favouritesViewModel::removeCatFromFavourites,
             showLifespan = true
         )
     }

@@ -32,4 +32,4 @@ the time.
 
 Notes:
 I really enjoyed the challenge and hope I did well, I'm a bit frustrated that I could not finish everything as I would like, but I had to create
-the entire project from scratch since I didn't have any template
+the entire project from scratch since I didn't have any template, which took a considerate amount of time.

@@ -13,12 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.LocationOn
@@ -63,7 +63,8 @@ fun DetailScreen(
         Detail(
             modifier = modifier,
             cat = cat!!,
-            addOrRemoveFromFavourites = detailViewModel::addOrRemoveCatFromFavourites
+            addOrRemoveFromFavourites = detailViewModel::addOrRemoveCatFromFavourites,
+            goBack = goBack,
         )
     }
 }
@@ -71,99 +72,119 @@ fun DetailScreen(
 @Composable
 fun Detail(
     modifier: Modifier = Modifier,
+    cat: Cat,
     addOrRemoveFromFavourites: () -> Unit,
-    cat: Cat
+    goBack: () -> Unit
 ) {
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(color = MaterialTheme.colorScheme.primaryContainer)
-            .padding(horizontal = 64.dp, vertical = 32.dp)
-            .statusBarsPadding()
-            .verticalScroll(rememberScrollState()),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(horizontal = 22.dp)
+            .padding(top = 48.dp)
     ) {
-        AsyncImage(
-            modifier = Modifier.fillMaxWidth(),
-            model = cat.url,
-            contentDescription = null
+        Icon(
+            modifier = Modifier
+                .size(32.dp)
+                .clickable { goBack() }
+                .align(Alignment.Start),
+            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+            contentDescription = stringResource(R.string.back),
+            tint = MaterialTheme.colorScheme.onPrimaryContainer
         )
-        Spacer(modifier = Modifier.height(12.dp))
-
-        Row(
-            verticalAlignment = Alignment.CenterVertically
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = MaterialTheme.colorScheme.primaryContainer)
+                .padding(horizontal = 42.dp)
+                .padding(bottom = 132.dp)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = cat.breed?.name.orEmpty(),
-                color = White,
-                fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+
+            Spacer(modifier = Modifier.height(8.dp))
+            AsyncImage(
+                modifier = Modifier.fillMaxWidth(),
+                model = cat.url,
+                contentDescription = null
             )
-            Icon(
-                modifier = Modifier.padding(start = 8.dp).clickable { addOrRemoveFromFavourites() },
-                imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                contentDescription = stringResource(R.string.favourites),
-                tint = White
-            )
-        }
+            Spacer(modifier = Modifier.height(12.dp))
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = cat.breed?.name.orEmpty(),
+                    color = White,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold
+                )
+                Icon(
+                    modifier = Modifier.padding(start = 8.dp).clickable { addOrRemoveFromFavourites() },
+                    imageVector = if (cat.isFavourite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                    contentDescription = stringResource(R.string.favourites),
+                    tint = White
+                )
+            }
 
 
-        Row(
-            modifier = Modifier.offset(x = (-12).dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                modifier = Modifier.size(16.dp),
-                imageVector = Icons.Default.LocationOn,
-                contentDescription = stringResource(R.string.location),
-                tint = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-            Text(
-                modifier = Modifier.padding(start = 4.dp),
-                text = cat.breed?.origin.orEmpty(),
-                fontSize = 14.sp,
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
+            Row(
+                modifier = Modifier.offset(x = (-12).dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = stringResource(R.string.location),
+                    tint = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+                Text(
+                    modifier = Modifier.padding(start = 4.dp),
+                    text = cat.breed?.origin.orEmpty(),
+                    fontSize = 14.sp,
+                    color = MaterialTheme.colorScheme.onPrimaryContainer
+                )
+            }
 
-        Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
-        FlowRow(
-            modifier = Modifier.fillMaxWidth(),
-            maxItemsInEachRow = 2,
-            horizontalArrangement = Arrangement.SpaceEvenly
-        ) {
-            cat.breed?.temperament?.forEach { temperament ->
-                Surface(
-                    color = MaterialTheme.colorScheme.secondaryContainer,
-                    shape = RoundedCornerShape(20.dp),
-                    tonalElevation = 2.dp,
-                    shadowElevation = 2.dp,
-                    modifier = Modifier.padding(4.dp).widthIn(min = 120.dp)
-                ) {
-                    Text(
-                        text = temperament,
-                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
-                        color = MaterialTheme.colorScheme.onSecondaryContainer,
-                        fontSize = 14.sp
-                    )
+            FlowRow(
+                modifier = Modifier.fillMaxWidth(),
+                maxItemsInEachRow = 2,
+                horizontalArrangement = Arrangement.SpaceEvenly
+            ) {
+                cat.breed?.temperament?.forEach { temperament ->
+                    Surface(
+                        color = MaterialTheme.colorScheme.secondaryContainer,
+                        shape = RoundedCornerShape(20.dp),
+                        tonalElevation = 2.dp,
+                        shadowElevation = 2.dp,
+                        modifier = Modifier.padding(4.dp).widthIn(min = 120.dp)
+                    ) {
+                        Text(
+                            text = temperament,
+                            modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                            color = MaterialTheme.colorScheme.onSecondaryContainer,
+                            fontSize = 14.sp
+                        )
+                    }
                 }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = stringResource(R.string.about),
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontSize = 18.sp
+            )
+
+            Text(
+                modifier = Modifier.padding(top = 16.dp),
+                text = cat.breed?.description.orEmpty(),
+                color = MaterialTheme.colorScheme.onPrimaryContainer,
+                fontSize = 14.sp
+            )
         }
-
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Text(
-            text = stringResource(R.string.about),
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-            fontSize = 18.sp
-        )
-
-        Text(
-            modifier = Modifier.padding(top = 16.dp),
-            text = cat.breed?.description.orEmpty(),
-            color = MaterialTheme.colorScheme.onPrimaryContainer,
-            fontSize = 14.sp
-        )
     }
 }
